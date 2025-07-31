@@ -55,7 +55,7 @@ function Details() {
 
       {loading && (
         <div className="mt-4 p-4 bg-blue-100 text-blue-700 rounded-md w-full max-w-2xl">
-          Aguarde carregando...
+          Aguarde carregando<span className='animate-ping'>.</span><span className='animate-ping'>.</span><span className='animate-ping'>.</span>
         </div>
       )}
 

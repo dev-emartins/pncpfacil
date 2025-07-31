@@ -35,9 +35,9 @@ function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
+    <div className="min-h-screen bg-gray-100 flex flex-col items-center gap-5">
       <h1 className="text-2xl font-bold mb-4">Consultar Contratações - PNCP</h1>
-      <div className="bg-white p-6 rounded-lg shadow-md w-full max-w-md">
+      <div className="bg-white p-6 rounded-lg shadow-md w-full md:max-w-4/5">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
             <label className="block text-sm font-medium text-gray-700">CNPJ:</label>
@@ -86,11 +86,11 @@ function Home() {
       )}
 
       {resultado.length > 0 && (
-        <div className="mt-4 p-6 bg-white rounded-lg shadow-md w-full max-w-2xl">
+        <div className="w-full md:max-w-4/5">
           <h2 className="text-xl font-semibold mb-4">Resultados:</h2>
-          <ul className="space-y-2">
+          <ul className="space-y-2 md:grid md:grid-cols-2 md:gap-5">
             {resultado.map((item, index) => (
-              <li className='pb-2 border-b-2 border-b-gray-300/20'>
+              <li className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-0.5'>
                 <Link key={index} to={`/details/${cnpj}/contratos/${item.anoContrato}/${item.sequencialContrato}`}>
                   <p><strong>Contrato:</strong> {item.numeroContratoEmpenho || 'N/A'}/{ item.anoContrato || 'N/A' }</p>
                   <p><strong>Fornecedor:</strong> {item.nomeRazaoSocialFornecedor || 'N/A'}</p>
