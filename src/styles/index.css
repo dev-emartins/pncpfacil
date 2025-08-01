@@ -1,5 +1,21 @@
 @import "tailwindcss";
 
+:root {
+  --bg-color: #f3f4f6;
+  --fg-color: #232426;
+}
+
+body{
+  min-height: 100dvh;
+  background-color: var(--bg-color);
+  color: var(--fg-color);
+}
+
 #root{
   min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
+  gap: 20px;
 }
