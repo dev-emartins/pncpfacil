@@ -5,7 +5,9 @@ import logo from '@/assets/logo.png'
 function Header() {
     return (
         <header className="w-full flex justify-between bg-white p-5 md:px-8 md:py-5 shadow-md">
-            <img className="w-40" src={ logo } alt="Logo" />
+            <Link to="/">
+              <img className="w-40" src={ logo } alt="Logo" />
+            </Link>
             <div className="flex items-center gap-3 py-0.5">
               <Link to="mailto:everaldoinfortecnico@gmail.com" target="_blank" className="text-blue-500 hover:text-blue-700">
                 <FaEnvelope className="text-2xl" />
