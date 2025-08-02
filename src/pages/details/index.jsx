@@ -50,12 +50,12 @@ function Details() {
     : false;
 
   return (
-    <div className="min-h-screen bg-gray-100 flex flex-col items-center p-4">
-      <h1 className="text-2xl font-bold mb-4">Detalhes da Contratação</h1>
+    <div className="w-full flex flex-col gap-5">
+      <h1 className="w-full bg-white p-5 rounded-lg shadow-md text-2xl font-bold">Detalhes da Contratação</h1>
 
       {loading && (
         <div className="mt-4 p-4 bg-blue-100 text-blue-700 rounded-md w-full max-w-2xl">
-          Aguarde carregando<span className='animate-ping'>.</span><span className='animate-ping'>.</span><span className='animate-ping'>.</span>
+          Aguarde carregando<span className='animate-ping'>...</span>
         </div>
       )}
 
@@ -66,23 +66,28 @@ function Details() {
       )}
 
       {resultado && (
-        <div className={`${vencido ? "bg-red-100" : "bg-green-100"} mt-4 p-6 rounded-lg shadow-md w-full max-w-2xl`}>
-          <h2 className="text-xl font-semibold mb-4">Detalhes do Contrato</h2>
-          <div className="space-y-2">
-            <p><strong>Órgão:</strong> {resultado.orgaoEntidade?.razaoSocial || 'N/A'}</p>
-            <p><strong>CNPJ Órgão:</strong> {resultado.orgaoEntidade?.cnpj || 'N/A'}</p>
-            <p><strong>Unidade:</strong> {resultado.unidadeOrgao?.nomeUnidade || 'N/A'} ({resultado.unidadeOrgao?.municipioNome || 'N/A'} - {resultado.unidadeOrgao?.ufSigla || 'N/A'})</p>
-            <p><strong>Fornecedor:</strong> {resultado.nomeRazaoSocialFornecedor || 'N/A'}</p>
-            <p><strong>CNPJ Fornecedor:</strong> {resultado.niFornecedor || 'N/A'}</p>
-            <p className='text-justify'><strong>Objeto do Contrato:</strong> {resultado.objetoContrato || 'N/A'}</p>
-            <p><strong>Valor Total:</strong> {formatCurrency(resultado.valorGlobal)}</p>
-            <p><strong>Data Assinatura:</strong> {formatDate(resultado.dataAssinatura)}</p>
-            <p><strong>Vigência:</strong> {formatDate(resultado.dataVigenciaInicio)} a {formatDate(resultado.dataVigenciaFim)}</p>
-            <p><strong>Categoria:</strong> {resultado.categoriaProcesso?.nome || 'N/A'}</p>
-            <p><strong>Número do Contrato:</strong> {resultado.numeroContratoEmpenho || 'N/A'}</p>
-            <p><strong>Processo:</strong> {resultado.processo || 'N/A'}</p>
-            <p><strong>Vencido: </strong>{ vencido ? "Vencido" : "Virgente" }</p>
-            <p><strong>Data Publicação PNCP:</strong> {formatDate(resultado.dataPublicacaoPncp)}</p>
+        <div className="w-full p-5 bg-white rounded-lg shadow-md">          
+          <div className="flex md:flex-row flex-col justify-between items-stretch gap-5">
+            <div className="w-full md:w-1/2">
+              <h2 className="text-xl font-semibold mb-4">Detalhes do Contrato</h2>
+              <p><strong>Órgão:</strong> {resultado.orgaoEntidade?.razaoSocial || 'N/A'}</p>
+              <p><strong>CNPJ Órgão:</strong> {resultado.orgaoEntidade?.cnpj || 'N/A'}</p>
+              <p><strong>Unidade:</strong> {resultado.unidadeOrgao?.nomeUnidade || 'N/A'} ({resultado.unidadeOrgao?.municipioNome || 'N/A'} - {resultado.unidadeOrgao?.ufSigla || 'N/A'})</p>
+              <p><strong>Fornecedor:</strong> {resultado.nomeRazaoSocialFornecedor || 'N/A'}</p>
+              <p><strong>CNPJ Fornecedor:</strong> {resultado.niFornecedor || 'N/A'}</p>
+              <p className='text-justify'><strong>Objeto do Contrato:</strong> {resultado.objetoContrato || 'N/A'}</p>
+              <p><strong>Valor Total:</strong> {formatCurrency(resultado.valorGlobal)}</p>
+              <p><strong>Data Assinatura:</strong> {formatDate(resultado.dataAssinatura)}</p>
+              <p><strong>Vigência:</strong> {formatDate(resultado.dataVigenciaInicio)} a {formatDate(resultado.dataVigenciaFim)}</p>
+              <p><strong>Categoria:</strong> {resultado.categoriaProcesso?.nome || 'N/A'}</p>
+              <p><strong>Número do Contrato:</strong> {resultado.numeroContratoEmpenho || 'N/A'}</p>
+              <p><strong>Processo:</strong> {resultado.processo || 'N/A'}</p>
+              <p><strong>Vencido: </strong>{ vencido ? "Vencido" : "Virgente" }</p>
+              <p><strong>Data Publicação PNCP:</strong> {formatDate(resultado.dataPublicacaoPncp)}</p>
+            </div>
+            <div className="w-full md:w-1/2">
+              <h2 className="text-xl font-semibold mb-4">Arquivo do Contrato</h2>
+            </div>
           </div>
           <button
             onClick={() => navigate(-1)}

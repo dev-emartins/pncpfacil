@@ -14,16 +14,6 @@ function Home() {
     return new Date(data).toLocaleDateString('pt-BR');
   }
 
-  function formatarDataPersonalizada(data) {
-    const options = {
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric',
-      weekday: 'long',
-    };
-    return new Date(data).toLocaleDateString('pt-BR', options);
-  }
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -49,7 +39,7 @@ function Home() {
   };
 
   return (
-    <div className="flex-1 max-w-9/10 bg-gray-100 flex flex-col items-center gap-5">      
+    <div className="w-full flex flex-col items-center gap-5">      
       <div className="bg-white p-5 rounded-lg shadow-md w-full">
         <h1 className="text-2xl font-bold text-center pb-5">Consultar Contratações</h1>
         <form onSubmit={handleSubmit} className="space-y-4 md:space-x-4 md:flex md:flex-row md:items-center gap-5">
@@ -102,13 +92,13 @@ function Home() {
       )}
 
       {resultado.length > 0 && (
-        <div className="w-full md:max-w-4/5">
+        <div className="w-full">
           <h2 className="text-xl text-center font-semibold mb-5 bg-white p-5 rounded-lg shadow-md w-full">
             Resultados no período de {formatarDataBrasil(dataInicial)} à {formatarDataBrasil(dataFinal)}
           </h2>
-          <ul className="space-y-2 md:grid md:grid-cols-2 md:gap-5">
+          <ul className="w-full md:grid md:grid-cols-2 md:gap-4">
             {resultado.map((item, index) => (
-              <li className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-0.5'>
+              <li className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
                 <Link key={index} to={`/details/${cnpj}/contratos/${item.anoContrato}/${item.sequencialContrato}`}>
                   <p><strong>Contrato:</strong> {item.numeroContratoEmpenho || 'N/A'}/{ item.anoContrato || 'N/A' }</p>
                   <p><strong>Fornecedor:</strong> {item.nomeRazaoSocialFornecedor || 'N/A'}</p>

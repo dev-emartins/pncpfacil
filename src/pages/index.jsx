@@ -1,13 +1,15 @@
 import { Outlet } from "react-router-dom"
-import logo from '@/assets/logo.png'
+import Header from "../components/header"
+import Footer from "../components/footer"
 
 function App(){
   return (
     <>
-      <header className="bg-white p-5 rounded-lg shadow-md mb-5">
-        <img className="w-36" src={ logo } alt="Logo" />
-      </header>
-      <Outlet />
+      <Header />
+      <main className="flex-1 w-full max-w-9/10 bg-gray-100 flex flex-col items-center gap-5">
+        <Outlet />
+      </main>
+      <Footer />
     </>
   )
 }
