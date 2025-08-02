@@ -40,8 +40,8 @@ function Home() {
 
   return (
     <div className="w-full flex flex-col items-center gap-5">      
-      <div className="bg-white p-5 rounded-lg shadow-md w-full">
-        <h1 className="text-2xl font-bold text-center pb-5">Consultar Contratações</h1>
+      <div className="w-full bg-white p-5 rounded-lg shadow-md">
+        <h1 className="text-xl md:text-2xl font-black text-center pb-5">Consultar Contratações</h1>
         <form onSubmit={handleSubmit} className="space-y-4 md:space-x-4 md:flex md:flex-row md:items-center gap-5">
           <div className='w-full md:w-1/4'>
             <label className="block text-sm font-medium text-gray-700">CNPJ:</label>
@@ -49,7 +49,7 @@ function Home() {
               type="text"
               value={cnpj}
               onChange={(e) => setCnpj(e.target.value)}
-              placeholder="Ex: 09090689000167"
+              placeholder="Ex: 12345678000190"
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
@@ -77,10 +77,10 @@ function Home() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 disabled:bg-blue-300"
+              className="w-full bg-blue-500 text-white font-semibold p-2 rounded-md hover:bg-blue-600 disabled:bg-blue-300"
             >
-              {loading ? 'Carregando...' : 'Consultar'}
-            </button>
+              {loading ? <>Carregando<span className="animate-ping">...</span></> : 'Consultar'}
+            </button>            
           </div>          
         </form>
       </div>
@@ -92,8 +92,8 @@ function Home() {
       )}
 
       {resultado.length > 0 && (
-        <div className="w-full">
-          <h2 className="text-xl text-center font-semibold mb-5 bg-white p-5 rounded-lg shadow-md w-full">
+        <div className="w-full flex flex-col gap-5">
+          <h2 className="text-xl text-center font-bold bg-white p-5 rounded-lg shadow-md w-full">
             Resultados no período de {formatarDataBrasil(dataInicial)} à {formatarDataBrasil(dataFinal)}
           </h2>
           <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
