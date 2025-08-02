@@ -96,7 +96,7 @@ function Home() {
           <h2 className="text-xl text-center font-semibold mb-5 bg-white p-5 rounded-lg shadow-md w-full">
             Resultados no período de {formatarDataBrasil(dataInicial)} à {formatarDataBrasil(dataFinal)}
           </h2>
-          <ul className="w-full md:grid md:grid-cols-2 md:gap-4">
+          <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             {resultado.map((item, index) => (
               <li className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
                 <Link key={index} to={`/details/${cnpj}/contratos/${item.anoContrato}/${item.sequencialContrato}`}>
