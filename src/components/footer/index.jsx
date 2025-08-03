@@ -33,9 +33,9 @@ function Footer(){
           <div>
             <h3 className="text-lg text-gray-100 font-semibold mb-4">Judiciais</h3>
             <ul className="space-y-2 text-sm">
-              <li><NavLink to="https://contasirregulares.tcu.gov.br/ordsext/f?p=105:21:0::NO:3,4,5,21:P21_FINS_ELEITORAIS:N" className="text-gray-300 hover:text-gray-200">Eleitoral</NavLink></li>
-              <li><NavLink to="https://contas.tcu.gov.br/ords/f?p=1660:3:5040568678855::::P3_TIPO_RELACAO:INABILITADO" className="text-gray-300 hover:text-gray-200">Inabilitados e Inidôneos</NavLink></li>
-              <li><NavLink to="https://certidoes-apf.apps.tcu.gov.br/" className="text-gray-300 hover:text-gray-200">Consulta Consolidada</NavLink></li>
+              <li><NavLink to="https://contasirregulares.tcu.gov.br/ordsext/f?p=105:21:0::NO:3,4,5,21:P21_FINS_ELEITORAIS:N" target="_blank" className="text-gray-300 hover:text-gray-200">Eleitoral</NavLink></li>
+              <li><NavLink to="https://contas.tcu.gov.br/ords/f?p=1660:3:5040568678855::::P3_TIPO_RELACAO:INABILITADO" target="_blank" className="text-gray-300 hover:text-gray-200">Inabilitados e Inidôneos</NavLink></li>
+              <li><NavLink to="https://certidoes-apf.apps.tcu.gov.br/" target="_blank" className="text-gray-300 hover:text-gray-200">Consulta Consolidada</NavLink></li>
             </ul>
           </div>
 

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { FaEnvelope, FaGithub, FaInstagram, FaLinkedin } from "react-icons/fa6"
 import logo from '@/assets/logo.png'
+import NavBar from '../navbar'
 
 function Header() {
     return (
@@ -8,6 +9,7 @@ function Header() {
             <Link to="/">
               <img className="w-40" src={ logo } alt="Logo" />
             </Link>
+            <NavBar />
             <div className="flex items-center gap-3 py-0.5">
               <Link to="mailto:everaldoinfortecnico@gmail.com" target="_blank" className="text-blue-500 hover:text-blue-700">
                 <FaEnvelope className="text-2xl" />
