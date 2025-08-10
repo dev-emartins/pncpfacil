@@ -16,7 +16,7 @@ function Details() {
       setLoading(true)
       setErro('')
       try {
-        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/compras/${ano}/${id}`)
+        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/contratos/${ano}/${id}`)
         if (!response.ok) {
           throw new Error('Erro na requisição: ' + response.status)
         }
@@ -68,7 +68,7 @@ function Details() {
       {resultado && (
         <div className="w-full p-5 bg-white rounded-lg shadow-md">         
           <div className="flex md:flex-row flex-col justify-between items-stretch gap-8">
-            <div className="w-full md:w-1/2 font-base" >              
+            <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >              
               <p><strong className="font-bold">Órgão:</strong> { resultado.orgaoEntidade?.razaoSocial || 'N/A' }</p>
               <p><strong className="font-bold">CNPJ Órgão:</strong> { resultado.orgaoEntidade?.cnpj || 'N/A' }</p>
               <p><strong className="font-bold">Unidade:</strong> { resultado.unidadeOrgao?.nomeUnidade || 'N/A' } ({ resultado.unidadeOrgao?.municipioNome || 'N/A' } - { resultado.unidadeOrgao?.ufSigla || 'N/A' })</p>
@@ -76,7 +76,7 @@ function Details() {
               <p><strong className="font-bold">CNPJ Fornecedor:</strong> { resultado.niFornecedor || 'N/A' }</p>
               <p className='text-justify'><strong className="font-bold">Objeto do Contrato:</strong> { resultado.objetoContrato || 'N/A' }</p>              
             </div>
-            <div className="w-full md:w-1/2 font-base" >              
+            <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >              
               <p><strong className="font-bold">Valor Total:</strong> { formatCurrency(resultado.valorGlobal) }</p>
               <p><strong className="font-bold">Data Assinatura:</strong> { formatDate(resultado.dataAssinatura) }</p>
               <p><strong className="font-bold">Vigência:</strong> { formatDate(resultado.dataVigenciaInicio) } a { formatDate(resultado.dataVigenciaFim) }</p>
