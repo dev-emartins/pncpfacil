@@ -60,7 +60,9 @@ function Home() {
         <form onSubmit={handleSubmit} className="space-y-4 md:space-x-4 md:flex md:flex-row md:items-center gap-5">
           { /* campos */ }
           <div className='w-full md:w-1/4'>
-            <label className="block text-sm font-medium text-gray-700">CNPJ:</label>
+            <label className="block text-sm font-medium text-gray-700 relative">
+              CNPJ:<span className="text-[9px] text-blue-600 absolute top-0 left-12">opcional</span>
+            </label>
             <input
               type="text"
               value={ cnpj }
