@@ -117,7 +117,7 @@ function Home() {
           <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             { resultado.map((item, index) => (
               <li key={index} className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
-                <Link to={`/details/${cnpj}/contratos/${item.anoContrato}/${item.sequencialContrato}`}>
+                <Link to={`/details/${cnpj || item.orgaoEntidade?.cnpj}/${item.anoContrato}/${item.sequencialContrato}`}>
                   <p><strong>Contrato:</strong> { item.numeroContratoEmpenho || 'N/A'}/{ item.anoContrato || 'N/A' }</p>
                   <p><strong>Contratante</strong> { item.orgaoEntidade?.razaoSocial || 'N/A' }/{ item.unidadeOrgao?.ufSigla || 'N/A' }</p>
                   <p><strong>Fornecedor:</strong> { item.nomeRazaoSocialFornecedor || 'N/A' }</p>
