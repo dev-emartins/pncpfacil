@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 
 function Home() {
   const [cnpj, setCnpj] = useState('')
-  const [dataInicial, setDataInicial] = useState('2025-08-05T00:00:00-03:00')
-  const [dataFinal, setDataFinal] = useState('2025-08-05T00:00:00-03:00')
+  const [dataInicial, setDataInicial] = useState('')
+  const [dataFinal, setDataFinal] = useState('')
   const [resultado, setResultado] = useState([])
   const [erro, setErro] = useState('')
   const [loading, setLoading] = useState(false)
