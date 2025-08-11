@@ -3,8 +3,8 @@ import { Link } from 'react-router-dom'
 
 function Home() {
   const [cnpj, setCnpj] = useState('')
-  const [dataInicial, setDataInicial] = useState('')
-  const [dataFinal, setDataFinal] = useState('')
+  const [dataInicial, setDataInicial] = useState('2025-08-05T00:00:00-03:00')
+  const [dataFinal, setDataFinal] = useState('2025-08-05T00:00:00-03:00')
   const [resultado, setResultado] = useState([])
   const [erro, setErro] = useState('')
   const [loading, setLoading] = useState(false)
@@ -14,7 +14,18 @@ function Home() {
   const formatDate = (dateStr) => dateStr.replaceAll('-', '')
 
   function formatarDataBrasil(data) {
-    return new Date(data).toLocaleDateString('pt-BR')
+    if (!data) return "N/A"
+
+    const [datePart] = data.toString().split('T')
+    const [year, month, day] = datePart.split('-')    
+
+    const dataLocal = new Date(year, month - 1, day);
+    
+    return dataLocal.toLocaleDateString('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric'
+    })
   }
 
   const buscar = async (paginaAtual = pagina) => {
