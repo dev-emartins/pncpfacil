@@ -73,7 +73,7 @@ function Details() {
 
       {resultado && (
         <div className="w-full p-5 bg-white rounded-lg shadow-md">         
-          <div className="flex md:flex-row flex-col justify-between items-stretch gap-8">
+          <div className="flex md:flex-row flex-col justify-between items-stretch md:gap-8">
             <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >              
               <p><strong className="font-bold">Órgão:</strong> { resultado.orgaoEntidade?.razaoSocial || "N/A" }</p>
               <p><strong className="font-bold">CNPJ Órgão:</strong> { formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
