@@ -34,7 +34,7 @@ function Minutes(){
     setResultado([])
 
     try {
-      const url = new URL('https://pncp.gov.br/api/consulta/v1/contratos')
+      const url = new URL('https://pncp.gov.br/api/consulta/v1/compras')
       url.searchParams.append('dataInicial', formatDate(dataInicial))
       url.searchParams.append('dataFinal', formatDate(dataFinal))
       if (cnpj) url.searchParams.append('cnpjOrgao', cnpj)

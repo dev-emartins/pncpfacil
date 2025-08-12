@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 function Contract(){
-    const [cnpj, setCnpj] = useState('')
+  const [cnpj, setCnpj] = useState('')
   const [dataInicial, setDataInicial] = useState('')
   const [dataFinal, setDataFinal] = useState('')
   const [resultado, setResultado] = useState([])

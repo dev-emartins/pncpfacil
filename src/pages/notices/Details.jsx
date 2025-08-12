@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react"
-import { FaCircleArrowLeft, FaCircleCheck, FaCircleXmark, FaFilePdf } from "react-icons/fa6"
+import { Link } from "react-router-dom"
+import { FaCircleArrowLeft, FaFilePdf, FaGlobe } from "react-icons/fa6"
 import { useParams, useNavigate } from "react-router-dom"
 
 function NoticesDetails() {
@@ -26,11 +27,11 @@ function NoticesDetails() {
       setLoading(true)
       setErro("")
       try {
-        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/contratos/${ano}/${id}`)
+        const response = await fetch(`https://pncp.gov.br/api/consulta/v1/orgaos/${cnpj}/compras/${ano}/${id}`)
         if (!response.ok) {
           throw new Error("Erro na requisição: " + response.status)
         }
-        const data = await response.json()
+        const data = await response.json()        
         setResultado(data)
       } catch (error) {
         setErro(error.message)
@@ -54,10 +55,32 @@ function NoticesDetails() {
     return new Intl.DateTimeFormat('pt-BR').format(new Date(date))
   }
 
-  const dataAtual = new Date()
-  const vencido = resultado?.dataVigenciaFim
-    ? new Date(resultado.dataVigenciaFim) < dataAtual
-    : false
+  const formatDateComHora = (date) => {
+    if (!date) return "N/A";
+    
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(new Date(date))
+  }
+
+  const formatDateHoraMaisUmMinuto = (date) => {
+    if (!date) return "N/A";  
+    const dataObj = new Date(date);  
+    dataObj.setTime(dataObj.getTime() + 60000);  
+    return new Intl.DateTimeFormat('pt-BR', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      hour12: false
+    }).format(dataObj)
+  }
 
   return (
     <div className="w-full flex flex-col gap-5">
@@ -82,23 +105,36 @@ function NoticesDetails() {
             <div className="flex md:flex-row flex-col justify-between items-stretch md:gap-8">
 
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" > 
-                <p><strong className="font-bold">Contrato nº:</strong> { formatarSequencial(resultado.numeroContratoEmpenho) || "N/A" }/{ resultado.anoContrato || "N/A" }</p>
-                <p><strong className="font-bold">Processo nº:</strong> { resultado.processo || "N/A" }</p>             
-                <p><strong className="font-bold">Contratante:</strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" }, CNPJ nº { formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
-                <p><strong className="font-bold">Contratado(a):</strong> { resultado.nomeRazaoSocialFornecedor || "N/A" }, CNPJ/CPF nº { formatCNPJ(resultado.niFornecedor) || "N/A" }</p>
-                <p className="text-justify"><strong className="font-bold">Objeto do Contrato:</strong> { resultado.objetoContrato || "N/A" }.</p>              
+                <p><strong>{ resultado.tipoInstrumentoConvocatorioNome || 'N/A' } nº: </strong>{ formatarSequencial(resultado.numeroCompra) || 'N/A'}/{ resultado.anoCompra|| 'N/A' }</p>
+                <p><strong className="font-bold">Processo nº:</strong> { resultado.processo || "N/A" }</p>  
+                <p><strong>Modalidade: </strong>{ resultado.modalidadeNome || 'N/A' }</p> 
+                <p><strong>Modo Disputa: </strong>{ resultado.modoDisputaNome || 'N/A' }</p>          
+                <p><strong>Órgão: </strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" } ( { resultado.unidadeOrgao.municipioNome } - { resultado.unidadeOrgao?.ufSigla || "N/A" } )</p>
+                <p><strong>CNPJ nº: </strong>{ formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
+                <p><strong className="font-bold">Valor Estimado:</strong> { formatCurrency(resultado.valorTotalEstimad) }</p>
               </div>
 
-              <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >              
-                <p><strong className="font-bold">Valor do Contrato:</strong> { formatCurrency(resultado.valorGlobal) }</p>
-                <p><strong className="font-bold">Data Assinatura:</strong> { formatDate(resultado.dataAssinatura) }</p>
-                <p><strong className="font-bold">Vigência:</strong> { formatDate(resultado.dataVigenciaInicio) } a { formatDate(resultado.dataVigenciaFim) }</p>
-                <p><strong className="font-bold">Categoria:</strong> { resultado.categoriaProcesso?.nome || "N/A" }</p>
-                <p className="flex gap-3"><strong className="font-bold">Status do Contrato: </strong>{vencido ? <span className="flex gap-2 text-red-600 font-bold"><FaCircleXmark className="text-xl" /> Vencido</span> : <span className="flex gap-2 text-green-600 font-bold"><FaCircleCheck className="text-xl" /> Virgente</span> }</p>  
-                <p><strong className="font-bold">Data Publicação PNCP:</strong> { formatDate(resultado.dataPublicacaoPncp) }</p>
-                <div className="py-5">
-                  <a className="w-fit flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-600 cursor-pointer" href={ `https://pncp.gov.br/pncp-api/v1/orgaos/${ cnpj }/contratos/${ ano }/${ id }/arquivos/1` } target="_blank" rel="noopener noreferrer">
-                    <FaFilePdf className="text-2xl" /> Baixar Contrato
+              <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >
+                <p><strong>Sigilo da Disputa: </strong>{ resultado.orcamentoSigilosoDescricao || 'N/A' }</p>
+                <p><strong className="font-bold">Data da Publicação: </strong> { formatDate(resultado.dataPublicacaoPncp) || 'N/A' }</p>
+                <p><strong className="font-bold">Data do Encerramento das Propostas: </strong> { formatDateComHora(resultado.dataEncerramentoProposta) || 'N/A' }</p>
+                <p><strong className="font-bold">Data do Certame: </strong>{ formatDateHoraMaisUmMinuto(resultado.dataEncerramentoProposta) || 'N/A' }</p>
+                <div className="pt-3">
+                  {resultado.linkSistemaOrigem && (
+                    <Link to={resultado.linkSistemaOrigem} target="_blank" className="inline-flex items-center gap-2 text-blue-600 hover:underline">
+                      <FaGlobe className="text-xl" /> Abrir Licitação
+                    </Link>
+                  )}
+                </div>               
+                
+                <div className="py-3">
+                  <a 
+                  className="w-fit flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-600 cursor-pointer" 
+                  href={ `https://pncp.gov.br/pncp-api/v1/orgaos/${ cnpj }/contratos/${ ano }/${ id }/arquivos/1` } 
+                  target="_blank" 
+                  rel="noopener noreferrer"
+                  >
+                    <FaFilePdf className="text-2xl" /> Baixar Edital
                   </a>
                 </div>            
               </div>
