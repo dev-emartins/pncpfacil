@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaCircleArrowLeft, FaCircleCheck, FaCircleXmark, FaFilePdf } from "react-icons/fa6"
 import { useParams, useNavigate } from "react-router-dom"
 
-function Details() {
+function ContractDetails() {
   const { cnpj, ano, id } = useParams()
 
   const navigate = useNavigate()
@@ -119,4 +119,4 @@ function Details() {
   )
 }
 
-export default Details
+export default ContractDetails
