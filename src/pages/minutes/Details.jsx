@@ -3,7 +3,7 @@ import { FaCircleArrowLeft, FaCircleCheck, FaCircleXmark, FaFilePdf } from "reac
 import { useParams, useNavigate } from "react-router-dom"
 
 function MinutesDetails() {
-  const { cnpj, ano, id } = useParams()
+  const { cnpj, ano, id, controle } = useParams()
 
   const navigate = useNavigate()
 
@@ -26,7 +26,7 @@ function MinutesDetails() {
       setLoading(true)
       setErro("")
       try {
-        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/contratos/${ano}/${id}`)
+        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/${ano}/${id}/atas/${controle}`)
         if (!response.ok) {
           throw new Error("Erro na requisição: " + response.status)
         }
@@ -39,7 +39,7 @@ function MinutesDetails() {
       }
     }
     fetchDetails()
-  }, [cnpj, ano, id])
+  }, [cnpj, ano, id, controle])
 
   const formatCurrency = (value) => {
     if (!value) return "N/A"
@@ -82,7 +82,7 @@ function MinutesDetails() {
             <div className="flex md:flex-row flex-col justify-between items-stretch md:gap-8">
 
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" > 
-                <p><strong className="font-bold">Contrato nº:</strong> { formatarSequencial(resultado.numeroContratoEmpenho) || "N/A" }/{ resultado.anoContrato || "N/A" }</p>
+                <p><strong className="font-bold">Ata nº:</strong> { formatarSequencial(resultado.numeroAtaRegistroPreco) || "N/A" }/{ resultado.anoContrato || "N/A" }</p>
                 <p><strong className="font-bold">Processo nº:</strong> { resultado.processo || "N/A" }</p>             
                 <p><strong className="font-bold">Contratante:</strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" }, CNPJ nº { formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
                 <p><strong className="font-bold">Contratado(a):</strong> { resultado.nomeRazaoSocialFornecedor || "N/A" }, CNPJ/CPF nº { formatCNPJ(resultado.niFornecedor) || "N/A" }</p>

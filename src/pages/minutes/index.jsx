@@ -2,7 +2,7 @@ import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
 function Minutes(){
-    const [cnpj, setCnpj] = useState('')
+  const [cnpj, setCnpj] = useState('')
   const [dataInicial, setDataInicial] = useState('')
   const [dataFinal, setDataFinal] = useState('')
   const [resultado, setResultado] = useState([])
@@ -28,13 +28,17 @@ function Minutes(){
     })
   }
 
+  const formatarSequencial = (sequencial) => {
+    return sequencial.toString().padStart(5, '0');
+  }
+
   const buscar = async (paginaAtual = pagina) => {
     setLoading(true)
     setErro('')
     setResultado([])
 
     try {
-      const url = new URL('https://pncp.gov.br/api/consulta/v1/compras')
+      const url = new URL('https://pncp.gov.br/api/consulta/v1/atas')
       url.searchParams.append('dataInicial', formatDate(dataInicial))
       url.searchParams.append('dataFinal', formatDate(dataFinal))
       if (cnpj) url.searchParams.append('cnpjOrgao', cnpj)
@@ -61,12 +65,20 @@ function Minutes(){
     buscar(1)
   }
 
+  function formatarDado(dado) {
+    const match = dado.match(/^(\d+)-(\d+)-(\d+)\/(\d+)-(\d+)$/);
+    if (!match) return null; // dado inválido
+
+    const [a, cnpj, tipo, b, ano, id] = match;
+    return `${cnpj}/${ano}/${tipo}/${id}`;
+  }
+
   return (
     <div className="w-full flex flex-col items-center gap-5">
       { /* FORM */ }
       <div className="w-full bg-white p-5 rounded-lg shadow-md">
         <h1 className="text-xl md:text-2xl font-black text-center pb-5">
-          Consultar Contratações
+          Consultar Atas de Registro de Preços
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4 md:space-x-4 md:flex md:flex-row md:items-center gap-5">
           { /* campos */ }
@@ -130,11 +142,11 @@ function Minutes(){
           <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             { resultado.map((item, index) => (
               <li key={index} className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
-                <Link to={`/minutes/details/${cnpj || item.orgaoEntidade?.cnpj}/${item.anoContrato}/${item.sequencialContrato}`}>
-                  <p><strong>Contrato:</strong> { item.numeroContratoEmpenho || 'N/A'}/{ item.anoContrato || 'N/A' }</p>
-                  <p><strong>Contratante</strong> { item.orgaoEntidade?.razaoSocial || 'N/A' }/{ item.unidadeOrgao?.ufSigla || 'N/A' }</p>
-                  <p><strong>Fornecedor:</strong> { item.nomeRazaoSocialFornecedor || 'N/A' }</p>
-                  <p className='text-justify'><strong>Objeto:</strong> { item.objetoContrato || item.objetoCompra }</p>
+                <Link to={`/minutes/details/${ formatarDado(item.numeroControlePNCPAta) }`}>
+                  <p><strong>ARP nº: </strong> { formatarSequencial(item.numeroAtaRegistroPreco) || 'N/A'}/{ item.anoAta || 'N/A'}</p>
+                  <p><strong>Órgão: </strong> { item.nomeOrgao || 'N/A' }</p>
+                  <p><strong>CNPJ:</strong> { item.cnpjOrgao || 'N/A' }</p>
+                  <p className='text-justify'><strong>Objeto:</strong> { item.objetoContratacao || 'N/A' }</p>
                 </Link>
               </li>
             )) }

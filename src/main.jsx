@@ -30,7 +30,7 @@ createRoot(document.getElementById('root')).render(
           <Route path='/notices/details/:cnpj/:ano/:id' element={ <NoticesDetails /> } />
 
           <Route path='/minutes' element={ <Minutes /> } /> 
-          <Route path='/minutes/details/:cnpj/:ano/:id' element={ <MinutesDetails /> } />
+          <Route path='/minutes/details/:cnpj/:ano/:id/:controle' element={ <MinutesDetails /> } />
 
           <Route path='/contract' element={ <Contract /> } /> 
           <Route path='/contract/details/:cnpj/:ano/:id' element={ <ContractDetails /> } />

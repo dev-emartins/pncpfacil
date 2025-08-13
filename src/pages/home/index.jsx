@@ -5,7 +5,7 @@ const Home = () => {
     <div className="w-full flex flex-col items-center gap-5">
       <div className="w-full bg-white p-5 rounded-lg shadow-md">
         <h1 className="text-xl md:text-2xl font-black text-center pb-5">
-          Consultar Processos e Contratos
+          Consultar Processos
         </h1>
         <div className="w-full flex justify-center items-center gap-4">
           <ButtonLink icon={ FaGavel } text="Compras" link="/notices" />
