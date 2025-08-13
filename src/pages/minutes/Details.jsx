@@ -3,9 +3,11 @@ import { FaCircleArrowLeft, FaCircleCheck, FaCircleXmark, FaFilePdf } from "reac
 import { useParams, useNavigate } from "react-router-dom"
 
 function MinutesDetails() {
-  const { cnpj, ano, id, controle } = useParams()
+  const { cnpj, ano, id, sequencial } = useParams()  
 
   const navigate = useNavigate()
+
+  console.log(cnpj, ano, sequencial, id)
 
   const [resultado, setResultado] = useState(null)
   const [erro, setErro] = useState("")
@@ -18,28 +20,29 @@ function MinutesDetails() {
   }
 
   const formatarSequencial = (sequencial) => {
-    return sequencial.toString().padStart(5, '0');
+    return sequencial?.toString().padStart(5, '0') || "N/A";
   }
 
   useEffect(() => {
     const fetchDetails = async () => {
       setLoading(true)
       setErro("")
-      try {
-        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/${ano}/${id}/atas/${controle}`)
+      try {        
+        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/compras/${ano}/${id}/atas/${sequencial}`)
         if (!response.ok) {
-          throw new Error("Erro na requisição: " + response.status)
+          throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`)
         }
         const data = await response.json()
         setResultado(data)
       } catch (error) {
         setErro(error.message)
+        console.error("Erro ao buscar dados:", error)
       } finally {
         setLoading(false)
       }
     }
     fetchDetails()
-  }, [cnpj, ano, id, controle])
+  }, [cnpj, ano, id, sequencial])
 
   const formatCurrency = (value) => {
     if (!value) return "N/A"
@@ -54,14 +57,9 @@ function MinutesDetails() {
     return new Intl.DateTimeFormat('pt-BR').format(new Date(date))
   }
 
-  const dataAtual = new Date()
-  const vencido = resultado?.dataVigenciaFim
-    ? new Date(resultado.dataVigenciaFim) < dataAtual
-    : false
-
   return (
     <div className="w-full flex flex-col gap-5">
-      <h1 className="w-full bg-white p-5 rounded-lg shadow-md text-xl md:text-2xl font-bold">Detalhes da Contratação</h1>
+      <h1 className="w-full bg-white p-5 rounded-lg shadow-md text-xl md:text-2xl font-bold">Detalhes da Ata de Registro de Preço</h1>
 
       {loading && (
         <div className="mt-4 p-4 bg-blue-100 text-blue-700 rounded-md w-full max-w-2xl">
@@ -71,38 +69,55 @@ function MinutesDetails() {
 
       {erro && (
         <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md w-full max-w-2xl">
-          {erro}
+          {erro.includes("404") ? "Ata não encontrada. Verifique os parâmetros." : erro}
         </div>
       )}
 
       {resultado && (
         <>
-          <h2 className="w-full bg-white p-5 rounded-lg shadow-md text-base md:text-xl text-center">{ resultado.orgaoEntidade?.razaoSocial || "N/A" } - { resultado.unidadeOrgao?.ufSigla || "N/A" }</h2>
+          <h2 className="w-full bg-white p-5 rounded-lg shadow-md text-base md:text-xl text-center">
+            {resultado.orgaoEntidade?.razaoSocial || "N/A"} - {resultado.unidadeOrgao?.ufSigla || "N/A"}
+          </h2>
           <div className="w-full p-5 bg-white rounded-lg shadow-md">   
             <div className="flex md:flex-row flex-col justify-between items-stretch md:gap-8">
-
-              <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" > 
-                <p><strong className="font-bold">Ata nº:</strong> { formatarSequencial(resultado.numeroAtaRegistroPreco) || "N/A" }/{ resultado.anoContrato || "N/A" }</p>
-                <p><strong className="font-bold">Processo nº:</strong> { resultado.processo || "N/A" }</p>             
-                <p><strong className="font-bold">Contratante:</strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" }, CNPJ nº { formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
-                <p><strong className="font-bold">Contratado(a):</strong> { resultado.nomeRazaoSocialFornecedor || "N/A" }, CNPJ/CPF nº { formatCNPJ(resultado.niFornecedor) || "N/A" }</p>
-                <p className="text-justify"><strong className="font-bold">Objeto do Contrato:</strong> { resultado.objetoContrato || "N/A" }.</p>              
+              <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5">
+                <p><strong className="font-bold">Ata nº:</strong> {resultado.numeroAtaRegistroPreco || "N/A"}/{resultado.anoAta || "N/A"}</p>
+                <p><strong className="font-bold">Número Controle PNCP:</strong> {resultado.numeroControlePNCP || "N/A"}</p>             
+                <p><strong className="font-bold">Órgão:</strong> {resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A"}, CNPJ nº {formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A"}</p>
+                <p><strong className="font-bold">Município:</strong> {resultado.unidadeOrgao?.municipioNome || "N/A"}/{resultado.unidadeOrgao?.ufSigla || "N/A"}</p>
+                <p className="text-justify"><strong className="font-bold">Objeto da Compra:</strong> {resultado.objetoCompra || "N/A"}</p>
+                <p><strong className="font-bold">Modalidade:</strong> {resultado.modalidadeNome || "N/A"}</p>
               </div>
 
-              <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >              
-                <p><strong className="font-bold">Valor do Contrato:</strong> { formatCurrency(resultado.valorGlobal) }</p>
-                <p><strong className="font-bold">Data Assinatura:</strong> { formatDate(resultado.dataAssinatura) }</p>
-                <p><strong className="font-bold">Vigência:</strong> { formatDate(resultado.dataVigenciaInicio) } a { formatDate(resultado.dataVigenciaFim) }</p>
-                <p><strong className="font-bold">Categoria:</strong> { resultado.categoriaProcesso?.nome || "N/A" }</p>
-                <p className="flex gap-3"><strong className="font-bold">Status do Contrato: </strong>{vencido ? <span className="flex gap-2 text-red-600 font-bold"><FaCircleXmark className="text-xl" /> Vencido</span> : <span className="flex gap-2 text-green-600 font-bold"><FaCircleCheck className="text-xl" /> Virgente</span> }</p>  
-                <p><strong className="font-bold">Data Publicação PNCP:</strong> { formatDate(resultado.dataPublicacaoPncp) }</p>
+              <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5">              
+                <p><strong className="font-bold">Data Assinatura:</strong> {formatDate(resultado.dataAssinatura) || "N/A"}</p>
+                <p><strong className="font-bold">Vigência:</strong> {formatDate(resultado.dataVigenciaInicio) || "N/A"} a {formatDate(resultado.dataVigenciaFim) || "N/A"}</p>
+                <p><strong className="font-bold">Data Publicação PNCP:</strong> {formatDate(resultado.dataPublicacaoPncp) || "N/A"}</p>
+                <p><strong className="font-bold">Status:</strong> 
+                  {resultado.cancelado ? 
+                    <span className="flex gap-2 text-red-600 font-bold">
+                      <FaCircleXmark className="text-xl" /> Cancelado
+                    </span> : 
+                    <span className="flex gap-2 text-green-600 font-bold">
+                      <FaCircleCheck className="text-xl" /> Vigente
+                    </span>
+                  }
+                </p>
+                {resultado.cancelado && (
+                  <p><strong className="font-bold">Data Cancelamento:</strong> {formatDate(resultado.dataCancelamento) || "N/A"}</p>
+                )}
+                <p><strong className="font-bold">Usuário Responsável:</strong> {resultado.usuarioNome || "N/A"}</p>
                 <div className="py-5">
-                  <a className="w-fit flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-600 cursor-pointer" href={ `https://pncp.gov.br/pncp-api/v1/orgaos/${ cnpj }/contratos/${ ano }/${ id }/arquivos/1` } target="_blank" rel="noopener noreferrer">
-                    <FaFilePdf className="text-2xl" /> Baixar Contrato
+                  <a 
+                    className="w-fit flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-600 cursor-pointer" 
+                    href={`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/atas/${ano}/${sequencial}/arquivos/1`} 
+                    target="_blank" 
+                    rel="noopener noreferrer"
+                  >
+                    <FaFilePdf className="text-2xl" /> Baixar Ata
                   </a>
                 </div>            
               </div>
-
             </div>          
           </div>
         </>        

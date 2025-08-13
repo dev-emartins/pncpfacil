@@ -69,8 +69,8 @@ function Minutes(){
     const match = dado.match(/^(\d+)-(\d+)-(\d+)\/(\d+)-(\d+)$/);
     if (!match) return null; // dado inválido
 
-    const [a, cnpj, tipo, b, ano, id] = match;
-    return `${cnpj}/${ano}/${tipo}/${id}`;
+    const [a, cnpj, id, b, ano, tipo] = match;
+    return `${cnpj}/${ano}/${id}/${tipo}`;
   }
 
   return (
@@ -81,19 +81,7 @@ function Minutes(){
           Consultar Atas de Registro de Preços
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4 md:space-x-4 md:flex md:flex-row md:items-center gap-5">
-          { /* campos */ }
-          <div className='w-full md:w-1/4'>
-            <label className="block text-sm font-medium text-gray-700 relative">
-              CNPJ:<span className="text-[9px] text-blue-600 absolute top-0 left-12">opcional</span>
-            </label>
-            <input
-              type="text"
-              value={ cnpj }
-              onChange={ (e) => setCnpj(e.target.value.replace(/\D/g, '')) }
-              placeholder="Ex: 12345678000190"
-              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
-            />
-          </div>
+          { /* campos */ }          
           <div className='w-full md:w-1/4'>
             <label className="block text-sm font-medium text-gray-700">Data Inicial:</label>
             <input
@@ -112,6 +100,18 @@ function Minutes(){
               onChange={ (e) => setDataFinal(e.target.value) }
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               required
+            />
+          </div>
+          <div className='w-full md:w-1/4'>
+            <label className="block text-sm font-medium text-gray-700 relative">
+              CNPJ:<span className="text-[9px] text-blue-600 absolute top-0 left-12">opcional</span>
+            </label>
+            <input
+              type="text"
+              value={ cnpj }
+              onChange={ (e) => setCnpj(e.target.value.replace(/\D/g, '')) }
+              placeholder="Ex: 12345678000190"
+              className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
             />
           </div>
           <div className='w-full md:w-1/4'>
