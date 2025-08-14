@@ -3,11 +3,10 @@ import { FaCircleArrowLeft, FaCircleCheck, FaCircleXmark, FaFilePdf } from "reac
 import { useParams, useNavigate } from "react-router-dom"
 
 function MinutesDetails() {
-  const { cnpj, ano, id, sequencial } = useParams()  
+  const { ano, cnpj, id, seq } = useParams()  
+
 
   const navigate = useNavigate()
-
-  console.log(cnpj, ano, sequencial, id)
 
   const [resultado, setResultado] = useState(null)
   const [erro, setErro] = useState("")
@@ -27,8 +26,8 @@ function MinutesDetails() {
     const fetchDetails = async () => {
       setLoading(true)
       setErro("")
-      try {        
-        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/compras/${ano}/${id}/atas/${sequencial}`)
+      try {
+        const response = await fetch(`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/compras/${ano}/${id}/atas/${seq}`)
         if (!response.ok) {
           throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`)
         }
@@ -42,7 +41,7 @@ function MinutesDetails() {
       }
     }
     fetchDetails()
-  }, [cnpj, ano, id, sequencial])
+  }, [ ano, cnpj, id, seq ])
 
   const formatCurrency = (value) => {
     if (!value) return "N/A"
@@ -81,7 +80,7 @@ function MinutesDetails() {
           <div className="w-full p-5 bg-white rounded-lg shadow-md">   
             <div className="flex md:flex-row flex-col justify-between items-stretch md:gap-8">
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5">
-                <p><strong className="font-bold">Ata nº:</strong> {resultado.numeroAtaRegistroPreco || "N/A"}/{resultado.anoAta || "N/A"}</p>
+                <p><strong className="font-bold">Ata nº:</strong> { formatarSequencial(resultado.numeroAtaRegistroPreco) || "N/A"}/{resultado.anoAta || "N/A"}</p>
                 <p><strong className="font-bold">Número Controle PNCP:</strong> {resultado.numeroControlePNCP || "N/A"}</p>             
                 <p><strong className="font-bold">Órgão:</strong> {resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A"}, CNPJ nº {formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A"}</p>
                 <p><strong className="font-bold">Município:</strong> {resultado.unidadeOrgao?.municipioNome || "N/A"}/{resultado.unidadeOrgao?.ufSigla || "N/A"}</p>
@@ -93,7 +92,7 @@ function MinutesDetails() {
                 <p><strong className="font-bold">Data Assinatura:</strong> {formatDate(resultado.dataAssinatura) || "N/A"}</p>
                 <p><strong className="font-bold">Vigência:</strong> {formatDate(resultado.dataVigenciaInicio) || "N/A"} a {formatDate(resultado.dataVigenciaFim) || "N/A"}</p>
                 <p><strong className="font-bold">Data Publicação PNCP:</strong> {formatDate(resultado.dataPublicacaoPncp) || "N/A"}</p>
-                <p><strong className="font-bold">Status:</strong> 
+                <p className="flex gap-2"><strong className="font-bold">Status:</strong> 
                   {resultado.cancelado ? 
                     <span className="flex gap-2 text-red-600 font-bold">
                       <FaCircleXmark className="text-xl" /> Cancelado
@@ -110,7 +109,7 @@ function MinutesDetails() {
                 <div className="py-5">
                   <a 
                     className="w-fit flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-600 cursor-pointer" 
-                    href={`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/atas/${ano}/${sequencial}/arquivos/1`} 
+                    href={`https://pncp.gov.br/pncp-api/v1/orgaos/${cnpj}/compras/${ano}/${id}/atas/${seq}`} 
                     target="_blank" 
                     rel="noopener noreferrer"
                   >

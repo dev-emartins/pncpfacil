@@ -28,6 +28,12 @@ function Minutes(){
     })
   }
 
+  const formatCNPJ = (cnpj) => {
+    if (!cnpj) return "N/A";
+    const digits = cnpj.replace(/\D/g, "")
+    return digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")
+  }
+
   const formatarSequencial = (sequencial) => {
     return sequencial.toString().padStart(5, '0');
   }
@@ -41,7 +47,7 @@ function Minutes(){
       const url = new URL('https://pncp.gov.br/api/consulta/v1/atas')
       url.searchParams.append('dataInicial', formatDate(dataInicial))
       url.searchParams.append('dataFinal', formatDate(dataFinal))
-      if (cnpj) url.searchParams.append('cnpjOrgao', cnpj)
+      if (cnpj) url.searchParams.append('cnpj', cnpj)
       url.searchParams.append('tamanhoPagina', 10)
       url.searchParams.append('pagina', paginaAtual.toString())
       
@@ -66,11 +72,14 @@ function Minutes(){
   }
 
   function formatarDado(dado) {
-    const match = dado.match(/^(\d+)-(\d+)-(\d+)\/(\d+)-(\d+)$/);
-    if (!match) return null; // dado inválido
+    // Example input: "92324706000127-1-000345/2023-000001"
+    const match = dado.match(/^(\d+)-(\d+)-(\d+)\/(\d+)-(\d+)$/)
+    if (!match) return null
 
-    const [a, cnpj, id, b, ano, tipo] = match;
-    return `${cnpj}/${ano}/${id}/${tipo}`;
+    const [_, cnpj, id, n, ano, sequencial] = match
+    const nata = sequencial.replace(/^0+/, '')
+    
+    return `${ano}/${id}/${nata}`
   }
 
   return (
@@ -142,10 +151,11 @@ function Minutes(){
           <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             { resultado.map((item, index) => (
               <li key={index} className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
-                <Link to={`/minutes/details/${ formatarDado(item.numeroControlePNCPAta) }`}>
+                <Link to={`/minutes/details/${item.cnpjOrgao}/${formatarDado(item.numeroControlePNCPAta)}`}>
                   <p><strong>ARP nº: </strong> { formatarSequencial(item.numeroAtaRegistroPreco) || 'N/A'}/{ item.anoAta || 'N/A'}</p>
                   <p><strong>Órgão: </strong> { item.nomeOrgao || 'N/A' }</p>
-                  <p><strong>CNPJ:</strong> { item.cnpjOrgao || 'N/A' }</p>
+                  <p><strong>CNPJ:</strong> { formatCNPJ(item.cnpjOrgao) || 'N/A' }</p>
+                  <p>{item.numeroControlePNCPAta}</p>
                   <p className='text-justify'><strong>Objeto:</strong> { item.objetoContratacao || 'N/A' }</p>
                 </Link>
               </li>
@@ -157,7 +167,7 @@ function Minutes(){
             <button
               disabled={ pagina <= 1 || loading }
               onClick={() => { setPagina(p => p - 1); buscar(pagina - 1); }}
-              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50 cursor-pointer"
             >
               Anterior
             </button>
@@ -165,7 +175,7 @@ function Minutes(){
             <button
               disabled={pagina >= totalPaginas || loading}
               onClick={() => { setPagina(p => p + 1); buscar(pagina + 1); }}
-              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50 cursor-pointer"
             >
               Próxima
             </button>
