@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
 
-function Minutes(){
+function Notices(){
   const [cnpj, setCnpj] = useState('')
+  const [modalidade, setModalidade] = useState(4)
   const [dataInicial, setDataInicial] = useState('')
   const [dataFinal, setDataFinal] = useState('')
   const [resultado, setResultado] = useState([])
@@ -28,38 +29,34 @@ function Minutes(){
     })
   }
 
-  const formatCNPJ = (cnpj) => {
-    if (!cnpj) return "N/A";
-    const digits = cnpj.replace(/\D/g, "")
-    return digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")
-  }
-
-  const formatarSequencial = (sequencial) => {
-    return sequencial.toString().padStart(5, '0');
-  }
-
   const buscar = async (paginaAtual = pagina) => {
     setLoading(true)
     setErro('')
     setResultado([])
 
     try {
-      const url = new URL('https://pncp.gov.br/api/consulta/v1/atas')
+      const url = new URL('https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao')
       url.searchParams.append('dataInicial', formatDate(dataInicial))
       url.searchParams.append('dataFinal', formatDate(dataFinal))
+      url.searchParams.append('codigoModalidadeContratacao', modalidade)
       if (cnpj) url.searchParams.append('cnpj', cnpj)
       url.searchParams.append('tamanhoPagina', 10)
-      url.searchParams.append('pagina', paginaAtual.toString())
-      
+      url.searchParams.append('pagina', paginaAtual.toString())      
 
       const response = await fetch(url)
       if (!response.ok) throw new Error('Erro na requisição: ' + response.status)
       const data = await response.json()
 
+      console.log(data)
+
       setResultado(data.data || [])
       setTotalPaginas(data.totalPaginas || 1)
     } catch (error) {
-      setErro(error.message)
+      if (error.message.includes("JSON.parse") || error.message.includes("Unexpected end of JSON input")) {
+        setErro("Nenhuma licitação encontrada.");
+      } else {
+        setErro(error.message);
+      }
     } finally {
       setLoading(false)
     }
@@ -71,23 +68,27 @@ function Minutes(){
     buscar(1)
   }
 
-  function formatarDado(dado) {
-    // Example input: "92324706000127-1-000345/2023-000001"
-    const match = dado.match(/^(\d+)-(\d+)-(\d+)\/(\d+)-(\d+)$/)
-    if (!match) return null
-
-    const [_, cnpj, id, n, ano, sequencial] = match
-    const nata = sequencial.replace(/^0+/, '')
-    
-    return `${ano}/${id}/${nata}`
-  }
+  const opcoesModalidade = [  
+    { value: 4, label: "Concorrência - Eletrônica" },
+    { value: 5, label: "Concorrência - Presencial" }, 
+    { value: 3, label: "Concurso" },
+    { value: 12, label: "Credenciamento" },
+    { value: 8, label: "Dispensa" },
+    { value: 9, label: "Inexigibilidade" },
+    { value: 1, label: "Leilão - Eletrônico" },
+    { value: 13, label: "Leilão - Presencial" },    
+    { value: 10, label: "Manifestação de Interesse" },
+    { value: 11, label: "Pré-qualificação" },
+    { value: 6, label: "Pregão - Eletrônico" },
+    { value: 7, label: "Pregão - Presencial" }
+  ]
 
   return (
     <div className="w-full flex flex-col items-center gap-5">
       { /* FORM */ }
       <div className="w-full bg-white p-5 rounded-lg shadow-md">
         <h1 className="text-xl md:text-2xl font-black text-center pb-5">
-          Consultar Atas de Registro de Preços
+          Consultar Contratações
         </h1>
         <form onSubmit={handleSubmit} className="space-y-4 md:space-x-4 md:flex md:flex-row md:items-center gap-5">
           { /* campos */ }          
@@ -110,6 +111,22 @@ function Minutes(){
               className="mt-1 block w-full p-2 border border-gray-300 rounded-md"
               required
             />
+          </div>
+          <div className='w-full md:w-1/4'>
+            <label className="block text-sm font-medium text-gray-700 relative">
+              Modalidade:
+            </label>
+            <select 
+              className="mt-1 block w-full p-2.5 border border-gray-300 rounded-md"
+              value={ modalidade } 
+              onChange={(e) => setModalidade(e.target.value)}
+            >
+              {opcoesModalidade.map((op, i) => (
+                <option key={i} value={op.value}>
+                  {op.label}
+                </option>
+              ))}
+            </select>
           </div>
           <div className='w-full md:w-1/4'>
             <label className="block text-sm font-medium text-gray-700 relative">
@@ -137,7 +154,7 @@ function Minutes(){
 
       { /* ERRO */ }
       { erro && (
-        <div className="mt-4 p-4 bg-red-100 text-red-700 rounded-md w-full max-w-md">
+        <div className="mt-4 p-4 bg-red-100 text-red-700 text-center rounded-md w-full max-w-md">
           {erro}
         </div>
       ) }
@@ -151,12 +168,14 @@ function Minutes(){
           <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             { resultado.map((item, index) => (
               <li key={index} className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
-                <Link to={`/minutes/details/${item.cnpjOrgao}/${formatarDado(item.numeroControlePNCPAta)}`}>
-                  <p><strong>ARP nº: </strong> { formatarSequencial(item.numeroAtaRegistroPreco) || 'N/A'}/{ item.anoAta || 'N/A'}</p>
-                  <p><strong>Órgão: </strong> { item.nomeOrgao || 'N/A' }</p>
-                  <p><strong>CNPJ:</strong> { formatCNPJ(item.cnpjOrgao) || 'N/A' }</p>
-                  <p>{item.numeroControlePNCPAta}</p>
-                  <p className='text-justify'><strong>Objeto:</strong> { item.objetoContratacao || 'N/A' }</p>
+                <Link to={`/editais/detalhes/${ cnpj || item.orgaoEntidade?.cnpj }/${ item.anoCompra }/${ item.sequencialCompra }`}>
+                  <p><strong>{ item.tipoInstrumentoConvocatorioNome || 'N/A' } nº: </strong>{ item.numeroCompra || 'N/A'}/{ item.anoCompra|| 'N/A' }</p>
+                  <p><strong>Processo nº </strong>{ item.processo }</p>
+                  <p><strong>Modalidade: </strong>{ item.modalidadeNome }</p>
+                  <p><strong>Órgão: </strong> { item.orgaoEntidade?.razaoSocial || 'N/A' }/{ item.unidadeOrgao?.ufSigla || 'N/A' }</p>
+                  <p><strong>CNPJ nº: </strong> { item.orgaoEntidade?.cnpj || 'N/A' }</p>
+                  <p className='text-justify'><strong>Objeto:</strong> { item.objetoCompra || 'N/A'}</p>
+                  <p><strong>Data da Publicação: </strong>{ formatarDataBrasil(item.dataPublicacaoPncp) }</p>
                 </Link>
               </li>
             )) }
@@ -167,7 +186,7 @@ function Minutes(){
             <button
               disabled={ pagina <= 1 || loading }
               onClick={() => { setPagina(p => p - 1); buscar(pagina - 1); }}
-              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50 cursor-pointer"
+              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
             >
               Anterior
             </button>
@@ -175,7 +194,7 @@ function Minutes(){
             <button
               disabled={pagina >= totalPaginas || loading}
               onClick={() => { setPagina(p => p + 1); buscar(pagina + 1); }}
-              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50 cursor-pointer"
+              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
             >
               Próxima
             </button>
@@ -186,4 +205,4 @@ function Minutes(){
     )
 }
 
-export default Minutes
+export default Notices

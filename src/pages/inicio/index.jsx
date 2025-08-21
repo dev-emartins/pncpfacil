@@ -92,21 +92,19 @@ function Home() {
       {/* Cabeçalho */}
       <div className="w-full bg-white p-5 rounded-lg shadow-md">
         <h1 className="text-xl md:text-2xl font-black text-center pb-5">Consultar Processos</h1>
-        <div className="w-full flex justify-center items-center gap-4">
-          <ButtonLink icon={FaGavel} text="Compras" link="/notices" />
-          <ButtonLink icon={FaFileLines} text="Atas de Registro de Preço" link="/minutes" />
-          <ButtonLink icon={FaFileContract} text="Contrato" link="/contract" />
+        <div className="w-full flex flex-col md:flex-row justify-center items-stretch md:itens-center gap-4">
+          <ButtonLink icon={FaGavel} text="Compras" link="/editais" />
+          <ButtonLink icon={FaFileLines} text="Atas de Registro de Preço" link="/atas" />
+          <ButtonLink icon={FaFileContract} text="Contrato" link="/contratos" />
         </div>
       </div>
-
-      {/* Mensagem de erro */}
+      
       {erro && <div className="p-4 bg-red-100 text-red-700 rounded-md">{erro}</div>}
-
-      {/* Lista de resultados */}
+      
       {resultado.length > 0 && (
         <div className="w-full flex flex-col gap-5">
           <h2 className="text-xl text-center font-bold bg-white p-5 rounded-lg shadow-md">
-            Resultados no período de { formatDateBR(dataInicial) } à { formatDateBR(dataFinal) }
+            Pregões - Eletrônicos publicados no período de { formatDateBR(dataInicial) } à { formatDateBR(dataFinal) }
           </h2>
 
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -149,8 +147,7 @@ function Home() {
               </li>
             ))}
           </ul>
-
-          {/* Paginação */}
+          
           <div className="flex justify-center gap-3 mt-5">
             <button
               disabled={pagina <= 1 || loading}

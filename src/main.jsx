@@ -5,19 +5,19 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import '@/styles/index.css'
 
 import App from '@/pages'
-import Home from '@/pages/home'
+import Home from '@/pages/inicio'
 
-import Notices from '@/pages/notices'
-import NoticesDetails from '@/pages/notices/Details'
+import Notices from '@/pages/editais'
+import NoticesDetails from '@/pages/editais/Details'
 
-import Minutes from '@/pages/minutes'
-import MinutesDetails from '@/pages/minutes/Details'
+import Minutes from '@/pages/atas'
+import MinutesDetails from '@/pages/atas/Details'
 
-import Contract from '@/pages/contract'
-import ContractDetails from '@/pages/contract/Details'
+import Contract from '@/pages/contratos'
+import ContractDetails from '@/pages/contratos/Details'
 
-import About from '@/pages/about'
-import Contact from '@/pages/contact'
+import About from '@/pages/sobre'
+import Contact from '@/pages/contato'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -26,17 +26,17 @@ createRoot(document.getElementById('root')).render(
         <Route element={ <App /> }>
           <Route path='/' element={ <Home /> } />
 
-          <Route path='/notices' element={ <Notices /> } /> 
-          <Route path='/notices/details/:cnpj/:ano/:id' element={ <NoticesDetails /> } />
+          <Route path='/editais' element={ <Notices /> } /> 
+          <Route path='/editais/detalhes/:cnpj/:ano/:id' element={ <NoticesDetails /> } />
 
-          <Route path='/minutes' element={ <Minutes /> } /> 
-          <Route path='/minutes/details/:cnpj/:ano/:id/:seq' element={ <MinutesDetails /> } />
+          <Route path='/atas' element={ <Minutes /> } /> 
+          <Route path='/atas/detalhes/:cnpj/:ano/:id/:seq' element={ <MinutesDetails /> } />
 
-          <Route path='/contract' element={ <Contract /> } /> 
-          <Route path='/contract/details/:cnpj/:ano/:id' element={ <ContractDetails /> } />
+          <Route path='/contratos' element={ <Contract /> } /> 
+          <Route path='/contratos/detalhes/:cnpj/:ano/:id' element={ <ContractDetails /> } />
 
-          <Route path='/about' element={ <About /> } />
-          <Route path='/contact' element={ <Contact /> } />
+          <Route path='/sobre' element={ <About /> } />
+          <Route path='/contato' element={ <Contact /> } />
         </Route>
       </Routes>
     </BrowserRouter>
