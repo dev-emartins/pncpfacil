@@ -130,7 +130,7 @@ function NoticesDetails() {
                 <div className="py-3">
                   <a 
                   className="w-fit flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold py-2 px-5 rounded-md hover:bg-blue-600 cursor-pointer" 
-                  href={ `https://pncp.gov.br/pncp-api/v1/orgaos/${ cnpj }/contratos/${ ano }/${ id }/arquivos/1` } 
+                  href={ `https://pncp.gov.br/pncp-api/v1/orgaos/${ cnpj }/compras/${ ano }/${ id }/arquivos/1` } 
                   target="_blank" 
                   rel="noopener noreferrer"
                   >

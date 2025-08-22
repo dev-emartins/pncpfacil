@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react"
 import { Link } from "react-router-dom"
 import { FaFileContract, FaFileLines, FaGavel } from "react-icons/fa6"
 import ButtonLink from "@/components/buttonlink"
+import debounce from "lodash/debounce"
 
 function Home() {
   const [dataInicial, setDataInicial] = useState("")
@@ -50,42 +51,72 @@ function Home() {
     setDataFinal(formatDate(hoje))
   }, [])
 
-  const buscar = useCallback(
-    async (paginaAtual = pagina) => {
-      setLoading(true)
-      setErro("")
-      setResultado([])
+  const validateDates = () => {
+    if (!dataInicial || !dataFinal) return false;
+    const initialDate = new Date(dataInicial.substring(0, 4), dataInicial.substring(4, 6) - 1, dataInicial.substring(6, 8))
+    const finalDate = new Date(dataFinal.substring(0, 4), dataFinal.substring(4, 6) - 1, dataFinal.substring(6, 8))
+    if (initialDate > finalDate) {
+      setErro("A data inicial deve ser anterior à data final")
+      return false
+    }
+    return true
+  }
 
-      try {
-        const url = new URL("https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao")
-        url.searchParams.append("dataInicial", dataInicial)
-        url.searchParams.append("dataFinal", dataFinal)
-        url.searchParams.append("codigoModalidadeContratacao", modalidade)
-        url.searchParams.append("tamanhoPagina", TAMANHO_PAGINA)
-        url.searchParams.append("pagina", paginaAtual)
+  const buscar = useCallback(debounce(async (paginaAtual = 1) => {
+    if (!validateDates()) return
 
-        const response = await fetch(url);
-        if (!response.ok) throw new Error(`Erro na requisição: ${response.status}`);
+    setLoading(true)
+    setErro("")
+    setResultado([])
 
-        const data = await response.json();
-        setResultado(data.data || []);
-        setTotalPaginas(data.totalPaginas || 1);
-      } catch (error) {
-        setErro(
-          error.message.includes("JSON.parse") || error.message.includes("Unexpected end")
-            ? "Nenhuma licitação encontrada."
-            : error.message
-        );
-      } finally {
-        setLoading(false);
+    try {
+      const url = new URL("https://pncp.gov.br/api/consulta/v1/contratacoes/publicacao")
+      url.searchParams.append("dataInicial", dataInicial)
+      url.searchParams.append("dataFinal", dataFinal)
+      url.searchParams.append("codigoModalidadeContratacao", modalidade)
+      url.searchParams.append("tamanhoPagina", TAMANHO_PAGINA)
+      url.searchParams.append("pagina", paginaAtual)
+
+      const response = await fetch(url, {
+        headers: { 'Accept': 'application/json' }
+      })
+
+      if (!response.ok) {
+        throw new Error(`Erro na requisição: ${response.status} - ${response.statusText}`)
       }
-    },
-    [dataInicial, dataFinal, modalidade, pagina]
-  )
+
+      const data = await response.json()
+      setResultado(data.data || [])
+      setTotalPaginas(data.totalPaginas || 1)
+      setPagina(paginaAtual)
+    } catch (error) {
+      setErro(
+        error.message.includes("JSON.parse") || error.message.includes("Unexpected end")
+          ? "Nenhuma licitação encontrada para o período especificado."
+          : `Erro ao buscar processos: ${error.message}`
+      );
+      console.error('Erro na busca:', error)
+    } finally {
+      setLoading(false)
+    }
+  }, 500), [dataInicial, dataFinal, modalidade])
 
   useEffect(() => {
     if (dataInicial && dataFinal) buscar(pagina)
-  }, [dataInicial, dataFinal, modalidade, pagina, buscar])
+  }, [dataInicial, dataFinal, pagina, buscar])
+
+  const SkeletonLoader = () => (
+    <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
+      {[...Array(4)].map((_, index) => (
+        <div key={index} className="p-5 bg-white rounded-lg shadow-md">
+          <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-2/3 mb-2"></div>
+          <div className="h-4 bg-gray-200 rounded w-full"></div>
+        </div>
+      ))}
+    </div>
+  )
 
   return (
     <div className="w-full flex flex-col items-center gap-5">
@@ -100,8 +131,10 @@ function Home() {
       </div>
       
       {erro && <div className="p-4 bg-red-100 text-red-700 rounded-md">{erro}</div>}
+
+      {loading && <SkeletonLoader />}
       
-      {resultado.length > 0 && (
+      {!loading && resultado.length > 0 && (
         <div className="w-full flex flex-col gap-5">
           <h2 className="text-xl text-center font-bold bg-white p-5 rounded-lg shadow-md">
             Pregões - Eletrônicos publicados no período de { formatDateBR(dataInicial) } à { formatDateBR(dataFinal) }
@@ -167,6 +200,11 @@ function Home() {
               Próxima
             </button>
           </div>
+        </div>
+      )}
+      {!loading && resultado.length === 0 && !erro && dataInicial && dataFinal && (
+        <div className="w-full p-4 bg-yellow-100 text-yellow-700 rounded-md">
+          Nenhuma licitação encontrada para o período de {formatDateBR(dataInicial)} à {formatDateBR(dataFinal)}
         </div>
       )}
     </div>
