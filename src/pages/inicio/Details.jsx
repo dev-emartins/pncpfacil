@@ -18,8 +18,33 @@ function HomeDetails() {
     return digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")
   }
 
+  const formatCpfCnpj = (value) => {
+    if (!value) return "N/A"
+
+    const digits = value.replace(/\D/g, "")
+
+    if (digits.length === 11) {
+      return digits.replace(
+        /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+        "$1.$2.$3-$4"
+      )
+    } else if (digits.length === 14) {
+      return digits.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+      )
+    }
+
+    return value
+  }
+
+
   const formatarSequencial = (sequencial) => {
-    return sequencial.toString().padStart(5, '0');
+    sequencial.toString()
+    if (typeof sequencial === 'string' && sequencial.includes('/')){
+      sequencial = sequencial.split('/')[0]
+    }
+    return sequencial.padStart(5, '0')
   }
 
   useEffect(() => {
@@ -106,15 +131,16 @@ function HomeDetails() {
 
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" > 
                 <p><strong>{ resultado.tipoInstrumentoConvocatorioNome || 'N/A' } nº: </strong>{ formatarSequencial(resultado.numeroCompra) || 'N/A'}/{ resultado.anoCompra|| 'N/A' }</p>
-                <p><strong className="font-bold">Processo nº:</strong> { resultado.processo || "N/A" }</p>  
+                <p><strong className="font-bold">Processo nº:</strong> { formatarSequencial(resultado.processo) || "N/A" }/{ resultado.anoCompra|| 'N/A' }</p>  
                 <p><strong>Modalidade: </strong>{ resultado.modalidadeNome || 'N/A' }</p> 
                 <p><strong>Modo Disputa: </strong>{ resultado.modoDisputaNome || 'N/A' }</p>          
-                <p><strong>Órgão: </strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" } ( { resultado.unidadeOrgao.municipioNome } - { resultado.unidadeOrgao?.ufSigla || "N/A" } )</p>
+                <p><strong>Órgão: </strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" }</p>
                 <p><strong>CNPJ nº: </strong>{ formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
-                <p><strong className="font-bold">Valor Estimado:</strong> { formatCurrency(resultado.valorTotalEstimad) }</p>
+                <p className="text-justify"><strong>Objeto:</strong> { resultado.objetoCompra || "N/A" }</p>                
               </div>
 
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >
+                <p><strong className="font-bold">Valor Estimado:</strong> { formatCurrency(resultado.valorTotalEstimado) || "N/A" }</p>
                 <p><strong>Sigilo da Disputa: </strong>{ resultado.orcamentoSigilosoDescricao || 'N/A' }</p>
                 <p><strong className="font-bold">Data da Publicação: </strong> { formatDate(resultado.dataPublicacaoPncp) || 'N/A' }</p>
                 <p><strong className="font-bold">Data do Encerramento das Propostas: </strong> { formatDateComHora(resultado.dataEncerramentoProposta) || 'N/A' }</p>

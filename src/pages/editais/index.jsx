@@ -29,6 +29,34 @@ function Notices(){
     })
   }
 
+  const formatCpfCnpj = (value) => {
+    if (!value) return "N/A"
+
+    const digits = value.replace(/\D/g, "")
+
+    if (digits.length === 11) {
+      return digits.replace(
+        /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+        "$1.$2.$3-$4"
+      )
+    } else if (digits.length === 14) {
+      return digits.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+      )
+    }
+
+    return value
+  }
+
+  const formatarSequencial = (sequencial) => {
+    sequencial.toString()
+    if (typeof sequencial === 'string' && sequencial.includes('/')){
+      sequencial = sequencial.split('/')[0]
+    }
+    return sequencial.padStart(5, '0')
+  }
+
   const buscar = async (paginaAtual = pagina) => {
     setLoading(true)
     setErro('')
@@ -169,11 +197,11 @@ function Notices(){
             { resultado.map((item, index) => (
               <li key={index} className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
                 <Link to={`/editais/detalhes/${ cnpj || item.orgaoEntidade?.cnpj }/${ item.anoCompra }/${ item.sequencialCompra }`}>
-                  <p><strong>{ item.tipoInstrumentoConvocatorioNome || 'N/A' } nº: </strong>{ item.numeroCompra || 'N/A'}/{ item.anoCompra|| 'N/A' }</p>
-                  <p><strong>Processo nº </strong>{ item.processo }</p>
+                  <p><strong>{ item.tipoInstrumentoConvocatorioNome || 'N/A' } nº: </strong>{ formatarSequencial(item.numeroCompra) || 'N/A'}/{ item.anoCompra|| 'N/A' }</p>
+                  <p><strong>Processo nº </strong>{ formatarSequencial(item.processo) }/{ item.anoCompra|| 'N/A' }</p>
                   <p><strong>Modalidade: </strong>{ item.modalidadeNome }</p>
                   <p><strong>Órgão: </strong> { item.orgaoEntidade?.razaoSocial || 'N/A' }/{ item.unidadeOrgao?.ufSigla || 'N/A' }</p>
-                  <p><strong>CNPJ nº: </strong> { item.orgaoEntidade?.cnpj || 'N/A' }</p>
+                  <p><strong>CNPJ nº: </strong> { formatCpfCnpj(item.orgaoEntidade?.cnpj) || 'N/A' }</p>
                   <p className='text-justify'><strong>Objeto:</strong> { item.objetoCompra || 'N/A'}</p>
                   <p><strong>Data da Publicação: </strong>{ formatarDataBrasil(item.dataPublicacaoPncp) }</p>
                 </Link>
