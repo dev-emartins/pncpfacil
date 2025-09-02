@@ -12,28 +12,31 @@ function ContractDetails() {
   const [loading, setLoading] = useState(true)
 
   const formatCpfCnpj = (value) => {
-  if (!value) return "N/A";
+    if (!value) return "N/A"
 
-  const digits = value.replace(/\D/g, "");
+    const digits = value.replace(/\D/g, "")
 
-  if (digits.length === 11) {
-    return digits.replace(
-      /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
-      "$1.$2.$3-$4"
-    );
-  } else if (digits.length === 14) {
-    return digits.replace(
-      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-      "$1.$2.$3/$4-$5"
-    );
+    if (digits.length === 11) {
+      return digits.replace(
+        /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+        "$1.$2.$3-$4"
+      )
+    } else if (digits.length === 14) {
+      return digits.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+      )
+    }
+
+    return value
   }
 
-  return value;
-};
-
-
   const formatarSequencial = (sequencial) => {
-    return sequencial.toString().padStart(5, '0');
+    sequencial.toString()
+    if (typeof sequencial === 'string' && sequencial.includes('/')){
+      sequencial = sequencial.split('/')[0]
+    }
+    return sequencial.padStart(5, '0')
   }
 
   useEffect(() => {
@@ -98,7 +101,7 @@ function ContractDetails() {
 
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" > 
                 <p><strong className="font-bold">Contrato nº:</strong> { formatarSequencial(resultado.numeroContratoEmpenho) || "N/A" }/{ resultado.anoContrato || "N/A" }</p>
-                <p><strong className="font-bold">Processo nº:</strong> { resultado.processo || "N/A" }</p>             
+                <p><strong className="font-bold">Processo nº:</strong> { formatarSequencial(resultado.processo) || "N/A" }/{ resultado.anoContrato || "N/A" }</p>             
                 <p><strong className="font-bold">Contratante:</strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" }, CNPJ nº { formatCpfCnpj(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
                 <p><strong className="font-bold">Contratado(a):</strong> { resultado.nomeRazaoSocialFornecedor || "N/A" }, CNPJ/CPF nº { formatCpfCnpj(resultado.niFornecedor) || "N/A" }</p>
                 <p className="text-justify"><strong className="font-bold">Objeto do Contrato:</strong> { resultado.objetoContrato || "N/A" }.</p>              

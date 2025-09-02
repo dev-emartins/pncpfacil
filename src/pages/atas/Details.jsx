@@ -12,25 +12,24 @@ function MinuteDetails() {
   const [loading, setLoading] = useState(true)
 
   const formatCpfCnpj = (value) => {
-  if (!value) return "N/A";
+    if (!value) return "N/A"
 
-  const digits = value.replace(/\D/g, "");
+    const digits = value.replace(/\D/g, "")
 
-  if (digits.length === 11) {
-    return digits.replace(
-      /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
-      "$1.$2.$3-$4"
-    );
-  } else if (digits.length === 14) {
-    return digits.replace(
-      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
-      "$1.$2.$3/$4-$5"
-    );
+    if (digits.length === 11) {
+      return digits.replace(
+        /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+        "$1.$2.$3-$4"
+      )
+    } else if (digits.length === 14) {
+      return digits.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+      )
+    }
+
+    return value
   }
-
-  return value;
-};
-
 
   const formatarSequencial = (sequencial) => {
     sequencial.toString()
@@ -102,11 +101,6 @@ function MinuteDetails() {
                 <p><strong className="font-bold">Órgão:</strong> {resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A"}</p>
                 <p>CNPJ nº {formatCpfCnpj(resultado.orgaoEntidade?.cnpj) || "N/A"}</p>
                 <p><strong className="font-bold">Município:</strong> {resultado.unidadeOrgao?.municipioNome || "N/A"}/{resultado.unidadeOrgao?.ufSigla || "N/A"}</p>
-                {
-                  resultado.unidadeOrgao.nomeUnidade && (
-                    <p><strong className="font-bold">Unidade:</strong> {resultado.unidadeOrgao?.nomeUnidade || "N/A"}</p>
-                  )
-                }
                 <p className="text-justify"><strong className="font-bold">Objeto da Compra:</strong> {resultado.objetoCompra || "N/A"}</p>
               </div>
 

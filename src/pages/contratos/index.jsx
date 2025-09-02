@@ -13,6 +13,34 @@ function Contract(){
 
   const formatDate = (dateStr) => dateStr.replaceAll('-', '')
 
+  const formatCpfCnpj = (value) => {
+    if (!value) return "N/A"
+
+    const digits = value.replace(/\D/g, "")
+
+    if (digits.length === 11) {
+      return digits.replace(
+        /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+        "$1.$2.$3-$4"
+      )
+    } else if (digits.length === 14) {
+      return digits.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+      )
+    }
+
+    return value
+  }
+
+  const formatarSequencial = (sequencial) => {
+    sequencial.toString()
+    if (typeof sequencial === 'string' && sequencial.includes('/')){
+      sequencial = sequencial.split('/')[0]
+    }
+    return sequencial.padStart(5, '0')
+  }
+
   function formatarDataBrasil(data) {
     if (!data) return "N/A"
 
@@ -131,9 +159,10 @@ function Contract(){
             { resultado.map((item, index) => (
               <li key={index} className='p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1'>
                 <Link to={`/contratos/detalhes/${cnpj || item.orgaoEntidade?.cnpj}/${item.anoContrato}/${item.sequencialContrato}`}>
-                  <p><strong>Contrato:</strong> { item.numeroContratoEmpenho || 'N/A'}/{ item.anoContrato || 'N/A' }</p>
-                  <p><strong>Contratante</strong> { item.orgaoEntidade?.razaoSocial || 'N/A' }/{ item.unidadeOrgao?.ufSigla || 'N/A' }</p>
-                  <p><strong>Fornecedor:</strong> { item.nomeRazaoSocialFornecedor || 'N/A' }</p>
+                  <p><strong>Contrato:</strong> { formatarSequencial(item.numeroContratoEmpenho) || 'N/A'}/{ item.anoContrato || 'N/A' }</p>
+                  <p><strong>Processo:</strong> { formatarSequencial(item.processo) }/{ item.anoContrato || 'N/A' }</p>
+                  <p><strong>Contratante:</strong> { item.orgaoEntidade?.razaoSocial || 'N/A' }/{ item.unidadeOrgao?.ufSigla || 'N/A' }</p>
+                  <p><strong>Contratado(a):</strong> { item.nomeRazaoSocialFornecedor || 'N/A' }</p>
                   <p className='text-justify'><strong>Objeto:</strong> { item.objetoContrato || item.objetoCompra }</p>
                 </Link>
               </li>

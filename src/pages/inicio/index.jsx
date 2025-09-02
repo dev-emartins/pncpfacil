@@ -18,6 +18,34 @@ function Home() {
 
   const formatDate = (date) => date.toISOString().split("T")[0].replace(/-/g, "")
 
+  const formatCpfCnpj = (value) => {
+    if (!value) return "N/A"
+
+    const digits = value.replace(/\D/g, "")
+
+    if (digits.length === 11) {
+      return digits.replace(
+        /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+        "$1.$2.$3-$4"
+      )
+    } else if (digits.length === 14) {
+      return digits.replace(
+        /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+        "$1.$2.$3/$4-$5"
+      )
+    }
+
+    return value
+  }
+
+  const formatarSequencial = (sequencial) => {
+    sequencial.toString()
+    if (typeof sequencial === 'string' && sequencial.includes('/')){
+      sequencial = sequencial.split('/')[0]
+    }
+    return sequencial.padStart(5, '0')
+  }
+
   const formatDateBR = (dateString) => {
     if (!dateString) return "N/A";
     
@@ -38,10 +66,6 @@ function Home() {
 
     return `${dia}/${mes}/${ano}`
   }
-
-  const formatCNPJ = (valor) => valor
-      ? valor.replace(/\D/g, "").replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")
-      : ""
 
   useEffect(() => {
     const hoje = new Date()
@@ -107,7 +131,7 @@ function Home() {
 
   const SkeletonLoader = () => (
     <div className="w-full grid grid-cols-1 md:grid-cols-2 gap-4 animate-pulse">
-      {[...Array(4)].map((_, index) => (
+      {[...Array(10)].map((_, index) => (
         <div key={index} className="p-5 bg-white rounded-lg shadow-md">
           <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
           <div className="h-4 bg-gray-200 rounded w-1/2 mb-2"></div>
@@ -115,6 +139,25 @@ function Home() {
           <div className="h-4 bg-gray-200 rounded w-full"></div>
         </div>
       ))}
+      <div className="flex justify-center gap-3 mt-5">
+            <button
+              disabled={pagina <= 1 || loading}
+              onClick={() => setPagina((p) => p - 1)}
+              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+            >
+              Anterior
+            </button>
+            <span>
+              Página {pagina} de {totalPaginas}
+            </span>
+            <button
+              disabled={pagina >= totalPaginas || loading}
+              onClick={() => setPagina((p) => p + 1)}
+              className="bg-gray-300 px-3 py-1 rounded disabled:opacity-50"
+            >
+              Próxima
+            </button>
+          </div>
     </div>
   )
 
@@ -146,36 +189,14 @@ function Home() {
                 key={index}
                 className="p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1"
               >
-                <Link
-                  to={`/detalhes/${item.orgaoEntidade?.cnpj}/${item.anoCompra}/${item.sequencialCompra}`}
-                >
-                  <p>
-                    <strong>{item.tipoInstrumentoConvocatorioNome || "N/A"} nº: </strong>
-                    {item.numeroCompra || "N/A"}/{item.anoCompra || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Processo nº </strong>
-                    {item.processo}
-                  </p>
-                  <p>
-                    <strong>Modalidade: </strong>
-                    {item.modalidadeNome}
-                  </p>
-                  <p>
-                    <strong>Órgão: </strong>
-                    {item.orgaoEntidade?.razaoSocial || "N/A"}/{item.unidadeOrgao?.ufSigla || "N/A"}
-                  </p>
-                  <p>
-                    <strong>CNPJ nº: </strong>
-                    {formatCNPJ(item.orgaoEntidade?.cnpj) || "N/A"}
-                  </p>
-                  <p className="text-justify">
-                    <strong>Objeto:</strong> {item.objetoCompra || "N/A"}
-                  </p>
-                  <p>
-                    <strong>Data da Publicação: </strong>
-                    { formatDateBr(item.dataPublicacaoPncp) }
-                  </p>
+                <Link to={`/detalhes/${item.orgaoEntidade?.cnpj}/${item.anoCompra}/${item.sequencialCompra}`}>
+                  <p><strong>{item.tipoInstrumentoConvocatorioNome || "N/A"} nº: </strong>{ formatarSequencial(item.numeroCompra) || "N/A"}/{item.anoCompra || "N/A"}</p>
+                  <p><strong>Processo nº </strong>{formatarSequencial(item.processo)}</p>
+                  <p><strong>Modalidade: </strong>{item.modalidadeNome}</p>
+                  <p><strong>Órgão: </strong>{item.orgaoEntidade?.razaoSocial || "N/A"}/{item.unidadeOrgao?.ufSigla || "N/A"}</p>
+                  <p><strong>CNPJ nº: </strong>{formatCpfCnpj(item.orgaoEntidade?.cnpj) || "N/A"}</p>
+                  <p className="text-justify"><strong>Objeto:</strong> {item.objetoCompra || "N/A"}</p>
+                  <p><strong>Data da Publicação: </strong>{ formatDateBr(item.dataPublicacaoPncp) }</p>
                 </Link>
               </li>
             ))}
