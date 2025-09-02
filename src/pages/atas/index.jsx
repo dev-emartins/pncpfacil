@@ -1,4 +1,5 @@
 import { useState, useCallback } from "react"
+import { Link } from "react-router-dom"
 
 function Minutes() {
   const [dataInicial, setDataInicial] = useState("")
@@ -84,7 +85,7 @@ function Minutes() {
         totalPaginas: data.totalPaginas || 0
       }
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Erro desconhecido na consulta"
+      const errorMessage = error instanceof Error ? error.message + " Tente novamente." : "Erro desconhecido na consulta, tente novamente."
       setErro(errorMessage)
       return { atas: [], totalPaginas: 0 }
     } finally {
@@ -115,7 +116,15 @@ function Minutes() {
     setPagina(page)
     const result = await fetchAtas(page)
     setAtas(result.atas)
-  }, [fetchAtas])
+  }, [fetchAtas])  
+
+  function formatarDado(dado) {
+    const match = dado.match(/^(\d+)-(\d+)-(\d+)\/(\d+)-(\d+)$/);
+    if (!match) return null;
+
+    const [a, cnpj, b, process, ano, numAta] = match;
+    return `${cnpj}/${ano}/${process}/${numAta}`;
+  }
 
   return (
     <div className="w-full flex flex-col items-center gap-5">      
@@ -188,37 +197,13 @@ function Minutes() {
           </h2>
           <ul className="w-full grid grid-cols-1 md:grid-cols-2 gap-4">
             {atas.map((item, index) => (
-              <li
-                key={index}
-                className="p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1 transition-transform"
-              >
-                <p>
-                  <strong>ARP nº: </strong> {formatarSequencial(item.numeroAtaRegistroPreco)}/
-                  {item.anoAta || "N/A"}
-                </p>
-                <p>
-                  <strong>Órgão: </strong> {item.nomeOrgao || "N/A"}
-                </p>
-                <p>
-                  <strong>CNPJ:</strong> {formatCNPJ(item.cnpjOrgao)}
-                </p>
-                <p>
-                  <strong>Controle PNCP:</strong> {item.numeroControlePNCPAta || "N/A"}
-                </p>
-                <p>
-                  <strong>Assinatura:</strong> {formatDateDisplay(item.dataAssinatura)}
-                </p>
-                <p>
-                  <strong>Vigência:</strong> {formatDateDisplay(item.vigenciaInicio)} até {formatDateDisplay(item.vigenciaFim)}
-                </p>
-                <p className="text-justify mt-2">
-                  <strong>Objeto:</strong> {item.objetoContratacao || "N/A"}
-                </p>
-                {item.cancelado && (
-                  <span className="inline-block mt-2 px-2 py-1 bg-red-100 text-red-800 text-xs font-medium rounded">
-                    Cancelada
-                  </span>
-                )}
+              <li key={index} className="p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1 transition-transform">
+              <Link to={`/atas/detalhes/${ formatarDado(item.numeroControlePNCPAta) }`}>
+                <p><strong>ARP nº: </strong> { formatarSequencial(item.numeroAtaRegistroPreco) }/{ item.anoAta || "N/A" }</p>
+                <p><strong>Órgão: </strong> { item.nomeOrgao || "N/A" }</p>
+                <p><strong>CNPJ:</strong> { formatCNPJ(item.cnpjOrgao) }</p>                
+                <p className="text-justify mt-2"><strong>Objeto:</strong> {item.objetoContratacao || "N/A"}</p>                
+              </Link>
               </li>
             ))}
           </ul>
