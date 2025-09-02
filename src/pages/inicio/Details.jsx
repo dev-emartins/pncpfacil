@@ -3,7 +3,7 @@ import { Link } from "react-router-dom"
 import { FaCircleArrowLeft, FaFilePdf, FaGlobe } from "react-icons/fa6"
 import { useParams, useNavigate } from "react-router-dom"
 
-function NoticesDetails() {
+function HomeDetails() {
   const { cnpj, ano, id } = useParams()
 
   const navigate = useNavigate()
@@ -145,7 +145,7 @@ function NoticesDetails() {
       )}
       <div className="w-full flex justify-center md:justify-start items-center">
         <button
-          onClick={() => navigate("/editais")}
+          onClick={() => navigate("/")}
           className="w-32 flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold p-2 rounded-md hover:bg-blue-600 cursor-pointer"
         >
           <FaCircleArrowLeft /> Voltar
@@ -155,4 +155,4 @@ function NoticesDetails() {
   )
 }
 
-export default NoticesDetails
+export default HomeDetails

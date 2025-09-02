@@ -6,6 +6,7 @@ import '@/styles/index.css'
 
 import App from '@/pages'
 import Home from '@/pages/inicio'
+import HomeDetails from '@/pages/inicio/Details'
 
 import Notices from '@/pages/editais'
 import NoticesDetails from '@/pages/editais/Details'
@@ -25,6 +26,7 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route element={ <App /> }>
           <Route path='/' element={ <Home /> } />
+          <Route path='/detalhes/:cnpj/:ano/:id' element={ <HomeDetails /> } />
 
           <Route path='/editais' element={ <Notices /> } /> 
           <Route path='/editais/detalhes/:cnpj/:ano/:id' element={ <NoticesDetails /> } />

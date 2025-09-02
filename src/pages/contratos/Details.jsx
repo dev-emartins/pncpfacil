@@ -124,7 +124,7 @@ function ContractDetails() {
       )}
       <div className="w-full flex justify-center md:justify-start items-center">
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/contratos")}
           className="w-32 flex justify-center items-center gap-4 bg-blue-500 text-white font-semibold p-2 rounded-md hover:bg-blue-600 cursor-pointer"
         >
           <FaCircleArrowLeft /> Voltar
