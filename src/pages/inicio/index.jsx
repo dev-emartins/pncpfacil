@@ -147,7 +147,7 @@ function Home() {
                 className="p-5 border-b-2 border-b-gray-300/20 bg-white rounded-lg shadow-md hover:-translate-y-1"
               >
                 <Link
-                  to={`/notices/details/${item.orgaoEntidade?.cnpj}/${item.anoCompra}/${item.sequencialCompra}`}
+                  to={`/detalhes/${item.orgaoEntidade?.cnpj}/${item.anoCompra}/${item.sequencialCompra}`}
                 >
                   <p>
                     <strong>{item.tipoInstrumentoConvocatorioNome || "N/A"} nº: </strong>
