@@ -5,10 +5,19 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import '@/styles/index.css'
 
 import App from '@/pages'
-import Home from '@/pages/home'
-import Details from '@/pages/details'
-import About from '@/pages/about'
-import Contact from '@/pages/contact'
+import Home from '@/pages/inicio'
+
+import Notices from '@/pages/editais'
+import NoticesDetails from '@/pages/editais/Details'
+
+import Minutes from '@/pages/atas'
+import MinutesDetails from '@/pages/atas/Details'
+
+import Contract from '@/pages/contratos'
+import ContractDetails from '@/pages/contratos/Details'
+
+import About from '@/pages/sobre'
+import Contact from '@/pages/contato'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -16,9 +25,18 @@ createRoot(document.getElementById('root')).render(
       <Routes>
         <Route element={ <App /> }>
           <Route path='/' element={ <Home /> } />
-          <Route path='/details/:cnpj/:ano/:id' element={ <Details /> } />
-          <Route path='/about' element={ <About /> } />
-          <Route path='/contact' element={ <Contact /> } />
+
+          <Route path='/editais' element={ <Notices /> } /> 
+          <Route path='/editais/detalhes/:cnpj/:ano/:id' element={ <NoticesDetails /> } />
+
+          <Route path='/atas' element={ <Minutes /> } /> 
+          <Route path='/atas/detalhes/:cnpj/:ano/:process/:numAta' element={ <MinutesDetails /> } />
+
+          <Route path='/contratos' element={ <Contract /> } /> 
+          <Route path='/contratos/detalhes/:cnpj/:ano/:id' element={ <ContractDetails /> } />
+
+          <Route path='/sobre' element={ <About /> } />
+          <Route path='/contato' element={ <Contact /> } />
         </Route>
       </Routes>
     </BrowserRouter>

@@ -9,8 +9,8 @@ function NavBar() {
     
     const nav = [
         { title: "Inicío", url: "/", icon: FaHome },
-        { title: "Sobre", url: "/about", icon: FaQuestion },
-        { title: "Contato", url: "/contact", icon: FaAddressBook },
+        { title: "Sobre", url: "/sobre", icon: FaQuestion },
+        { title: "Contato", url: "/contato", icon: FaAddressBook },
     ];
     
     return (

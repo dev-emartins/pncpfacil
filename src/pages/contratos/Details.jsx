@@ -2,7 +2,7 @@ import { useState, useEffect } from "react"
 import { FaCircleArrowLeft, FaCircleCheck, FaCircleXmark, FaFilePdf } from "react-icons/fa6"
 import { useParams, useNavigate } from "react-router-dom"
 
-function Details() {
+function ContractDetails() {
   const { cnpj, ano, id } = useParams()
 
   const navigate = useNavigate()
@@ -11,11 +11,26 @@ function Details() {
   const [erro, setErro] = useState("")
   const [loading, setLoading] = useState(true)
 
-  const formatCNPJ = (cnpj) => {
-    if (!cnpj) return "N/A";
-    const digits = cnpj.replace(/\D/g, "")
-    return digits.replace(/^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/, "$1.$2.$3/$4-$5")
+  const formatCpfCnpj = (value) => {
+  if (!value) return "N/A";
+
+  const digits = value.replace(/\D/g, "");
+
+  if (digits.length === 11) {
+    return digits.replace(
+      /^(\d{3})(\d{3})(\d{3})(\d{2})$/,
+      "$1.$2.$3-$4"
+    );
+  } else if (digits.length === 14) {
+    return digits.replace(
+      /^(\d{2})(\d{3})(\d{3})(\d{4})(\d{2})$/,
+      "$1.$2.$3/$4-$5"
+    );
   }
+
+  return value;
+};
+
 
   const formatarSequencial = (sequencial) => {
     return sequencial.toString().padStart(5, '0');
@@ -84,8 +99,8 @@ function Details() {
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" > 
                 <p><strong className="font-bold">Contrato nº:</strong> { formatarSequencial(resultado.numeroContratoEmpenho) || "N/A" }/{ resultado.anoContrato || "N/A" }</p>
                 <p><strong className="font-bold">Processo nº:</strong> { resultado.processo || "N/A" }</p>             
-                <p><strong className="font-bold">Contratante:</strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" }, CNPJ nº { formatCNPJ(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
-                <p><strong className="font-bold">Contratado(a):</strong> { resultado.nomeRazaoSocialFornecedor || "N/A" }, CNPJ/CPF nº { formatCNPJ(resultado.niFornecedor) || "N/A" }</p>
+                <p><strong className="font-bold">Contratante:</strong> { resultado.unidadeOrgao?.nomeUnidade?.toUpperCase() || "N/A" }, CNPJ nº { formatCpfCnpj(resultado.orgaoEntidade?.cnpj) || "N/A" }</p>
+                <p><strong className="font-bold">Contratado(a):</strong> { resultado.nomeRazaoSocialFornecedor || "N/A" }, CNPJ/CPF nº { formatCpfCnpj(resultado.niFornecedor) || "N/A" }</p>
                 <p className="text-justify"><strong className="font-bold">Objeto do Contrato:</strong> { resultado.objetoContrato || "N/A" }.</p>              
               </div>
 
@@ -119,4 +134,4 @@ function Details() {
   )
 }
 
-export default Details
+export default ContractDetails
