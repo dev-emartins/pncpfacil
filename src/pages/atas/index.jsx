@@ -55,7 +55,7 @@ function Minutes() {
   const fetchAtas = useCallback(async (page) => {
     if (!dataInicial || !dataFinal) {
       setErro("Por favor, preencha as datas inicial e final")
-      return { atas: [], totalPaginas: 0, totalElements: 0 }
+      return { atas: [], totalPaginas: 0 }
     }
 
     let url = `https://pncp.gov.br/api/consulta/v1/atas?dataInicial=${formatDate(dataInicial)}&dataFinal=${formatDate(dataFinal)}&tamanhoPagina=${tamanhoPagina}&pagina=${page}`
@@ -81,13 +81,12 @@ function Minutes() {
       
       return {
         atas: data.data || [],
-        totalPaginas: data.totalPaginas || 0,
-        totalElements: data.totalRegistros || 0
+        totalPaginas: data.totalPaginas || 0
       }
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Erro desconhecido na consulta"
       setErro(errorMessage)
-      return { atas: [], totalPaginas: 0, totalElements: 0 }
+      return { atas: [], totalPaginas: 0 }
     } finally {
       setLoading(false)
     }
@@ -232,7 +231,7 @@ function Minutes() {
             >
               Mais recente
             </button>
-            <span>Página { pagina } de { totalPaginas }</span>
+            <span>Página { (totalPaginas + 1) - pagina } de { totalPaginas }</span>
             <button
               disabled={pagina <= 1 || loading}
               onClick={() => { setPagina(p => p - 1); buscar(pagina - 1); }}
