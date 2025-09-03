@@ -167,9 +167,9 @@ function Home() {
       <div className="w-full bg-white p-5 rounded-lg shadow-md">
         <h1 className="text-xl md:text-2xl font-black text-center pb-5">Consultar Processos</h1>
         <div className="w-full flex flex-col md:flex-row justify-center items-stretch md:itens-center gap-4">
-          <ButtonLink icon={FaGavel} text="Compras" link="/editais" />
-          <ButtonLink icon={FaFileLines} text="Atas de Registro de Preço" link="/atas" />
-          <ButtonLink icon={FaFileContract} text="Contrato" link="/contratos" />
+          <ButtonLink icon={FaGavel} text="Editais" link="/editais" />
+          <ButtonLink icon={FaFileLines} text="Atas de Registro de Preços" link="/atas" />
+          <ButtonLink icon={FaFileContract} text="Contratos" link="/contratos" />
         </div>
       </div>
       
