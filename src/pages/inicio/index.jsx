@@ -191,7 +191,7 @@ function Home() {
               >
                 <Link to={`/detalhes/${item.orgaoEntidade?.cnpj}/${item.anoCompra}/${item.sequencialCompra}`}>
                   <p><strong>{item.tipoInstrumentoConvocatorioNome || "N/A"} nº: </strong>{ formatarSequencial(item.numeroCompra) || "N/A"}/{item.anoCompra || "N/A"}</p>
-                  <p><strong>Processo nº </strong>{formatarSequencial(item.processo)}</p>
+                  <p><strong>Processo nº </strong>{formatarSequencial(item.processo)}/{item.anoCompra || "N/A"}</p>
                   <p><strong>Modalidade: </strong>{item.modalidadeNome}</p>
                   <p><strong>Órgão: </strong>{item.orgaoEntidade?.razaoSocial || "N/A"}/{item.unidadeOrgao?.ufSigla || "N/A"}</p>
                   <p><strong>CNPJ nº: </strong>{formatCpfCnpj(item.orgaoEntidade?.cnpj) || "N/A"}</p>

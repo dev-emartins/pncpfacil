@@ -108,7 +108,7 @@ function ContractDetails() {
               </div>
 
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >              
-                <p><strong className="font-bold">Valor do Contrato:</strong> { formatCurrency(resultado.valorGlobal) }</p>
+                <p><strong className="font-bold">Valor do Contrato:</strong> { formatCurrency(resultado.valorGlobal) || 'N/A' }</p>
                 <p><strong className="font-bold">Data Assinatura:</strong> { formatDate(resultado.dataAssinatura) }</p>
                 <p><strong className="font-bold">Vigência:</strong> { formatDate(resultado.dataVigenciaInicio) } a { formatDate(resultado.dataVigenciaFim) }</p>
                 <p><strong className="font-bold">Categoria:</strong> { resultado.categoriaProcesso?.nome || "N/A" }</p>

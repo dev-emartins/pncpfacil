@@ -133,7 +133,7 @@ function NoticesDetails() {
               </div>
 
               <div className="w-full md:w-1/2 font-base flex flex-col gap-2.5" >
-              <p><strong className="font-bold">Valor Estimado:</strong> { formatCurrency(resultado.valorTotalEstimado) }</p>
+                <p><strong className="font-bold">Valor Estimado:</strong> { formatCurrency(resultado.valorTotalEstimado) || 'Sigiloso' }</p>
                 <p><strong>Sigilo da Disputa: </strong>{ resultado.orcamentoSigilosoDescricao || 'N/A' }</p>
                 <p><strong className="font-bold">Data da Publicação: </strong> { formatDate(resultado.dataPublicacaoPncp) || 'N/A' }</p>
                 <p><strong className="font-bold">Data do Encerramento das Propostas: </strong> { formatDateComHora(resultado.dataEncerramentoProposta) || 'N/A' }</p>
