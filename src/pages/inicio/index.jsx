@@ -180,7 +180,7 @@ function Home() {
       {!loading && resultado.length > 0 && (
         <div className="w-full flex flex-col gap-5">
           <h2 className="text-xl text-center font-bold bg-white p-5 rounded-lg shadow-md">
-            Pregões - Eletrônicos publicados no período de { formatDateBR(dataInicial) } à { formatDateBR(dataFinal) }
+            Resultados no período de { formatDateBR(dataInicial) } à { formatDateBR(dataFinal) }
           </h2>
 
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-4">
